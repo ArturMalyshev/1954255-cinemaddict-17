@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Артур Малышев](https://up.htmlacademy.ru/ecmascript/17/user/1954255).
-* Наставник: `Неизвестно`.
+* Наставник: [Михаил Кислый](https://htmlacademy.ru/profile/smart-grizzly).
 
 ---
 
