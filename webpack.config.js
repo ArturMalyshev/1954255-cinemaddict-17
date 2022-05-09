@@ -5,8 +5,8 @@ module.exports = {
   context: path.resolve(__dirname, 'src'),
   entry: './main.js',
   output: {
-    filename: './bundle.js',
-    path: path.resolve(__dirname, 'build')
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'build'),
   },
   plugins: [
     new CleanWebpackPlugin(),
