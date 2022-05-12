@@ -1,1 +1,1 @@
-import './view/view.js';
+import './presenter/presenter.js';
