@@ -1,26 +1,49 @@
+function getTimeFromMins(mins) {
+  const hours = Math.trunc(mins/60);
+  const minutes = mins % 60;
+  return `${  hours  }h ${  minutes  }m`;
+}
+
 class Popup {
-  constructor(filmInfoObject) {
-    this.name = filmInfoObject.filmName;
-    this.originalName = filmInfoObject.originalName;
-    this.img = filmInfoObject.imgPath;
-    this.rating = filmInfoObject.rating;
-    this.date = filmInfoObject.date;
-    this.duration = filmInfoObject.duration;
-    this.genre = filmInfoObject.genre;
-    this.description = filmInfoObject.description;
-    this.commentCount = filmInfoObject.commentCount;
-    this.director = filmInfoObject.director;
-    this.autors = filmInfoObject.autors;
-    this.actors = filmInfoObject.actors;
-    this.country = filmInfoObject.country;
-    this.ageLimit = filmInfoObject.ageLimit;
+  constructor(filmInfoObject, commentsArray) {
+    this.name = filmInfoObject.film_info.title;
+    this.originalName = filmInfoObject.film_info.alternative_title;
+    this.img = filmInfoObject.film_info.poster;
+    this.rating = filmInfoObject.film_info.total_rating;
+    this.date = filmInfoObject.film_info.release.date;
+    this.duration = getTimeFromMins(filmInfoObject.film_info.runtime);
+    this.genre = filmInfoObject.film_info.genre;
+    this.description = filmInfoObject.film_info.description;
+    this.director = filmInfoObject.film_info.director;
+    this.authors = filmInfoObject.film_info.writers;
+    this.actors = filmInfoObject.film_info.actors;
+    this.country = filmInfoObject.film_info.release.release_country;
+    this.ageLimit = filmInfoObject.film_info.age_rating;
+    this.comments = filmInfoObject.comments;
+    this.watched = filmInfoObject.user_details.already_watched;
+    this.favorite = filmInfoObject.user_details.favorite;
+    this.watchlist = filmInfoObject.user_details.watchlist;
+    this.commentsArray = commentsArray;
   }
 
   generate() {
     const element = document.createElement('section');
     element.classList.add('film-details');
     const actors = this.actors.join(', ');
-    const autors = this.autors.join(', ');
+    const authors = this.authors.join(', ');
+    const filmRelease = new Date(this.date);
+    const popupDateOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+    const commentDateOptions = {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric'
+    };
     element.innerHTML = `
     <section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -31,7 +54,7 @@ class Popup {
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
               <img class="film-details__poster-img" src="${  this.img  }" alt="">
-              <p class="film-details__age">${  this.ageLimit  }</p>
+              <p class="film-details__age">${  this.ageLimit  } +</p>
             </div>
 
             <div class="film-details__info">
@@ -53,7 +76,7 @@ class Popup {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
-                  <td class="film-details__cell">${  autors  }</td>
+                  <td class="film-details__cell">${  authors  }</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Actors</td>
@@ -61,7 +84,7 @@ class Popup {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${  this.date  }</td>
+                  <td class="film-details__cell">${  new Intl.DateTimeFormat('en-GB', popupDateOptions).format(filmRelease) }</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
@@ -86,68 +109,16 @@ class Popup {
 
           <section class="film-details__controls">
             <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-            <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
+            <button type="button" class="film-details__control-button film-details__control-button--watched" id="watched" name="watched">Already watched</button>
             <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
           </section>
         </div>
 
         <div class="film-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${ this.comments.length }</span></h3>
 
             <ul class="film-details__comments-list">
-              <li class="film-details__comment">
-                <span class="film-details__comment-emoji">
-                  <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
-                </span>
-                <div>
-                  <p class="film-details__comment-text">Interesting setting and a good cast</p>
-                  <p class="film-details__comment-info">
-                    <span class="film-details__comment-author">Tim Macoveev</span>
-                    <span class="film-details__comment-day">2019/12/31 23:59</span>
-                    <button class="film-details__comment-delete">Delete</button>
-                  </p>
-                </div>
-              </li>
-              <li class="film-details__comment">
-                <span class="film-details__comment-emoji">
-                  <img src="./images/emoji/sleeping.png" width="55" height="55" alt="emoji-sleeping">
-                </span>
-                <div>
-                  <p class="film-details__comment-text">Booooooooooring</p>
-                  <p class="film-details__comment-info">
-                    <span class="film-details__comment-author">John Doe</span>
-                    <span class="film-details__comment-day">2 days ago</span>
-                    <button class="film-details__comment-delete">Delete</button>
-                  </p>
-                </div>
-              </li>
-              <li class="film-details__comment">
-                <span class="film-details__comment-emoji">
-                  <img src="./images/emoji/puke.png" width="55" height="55" alt="emoji-puke">
-                </span>
-                <div>
-                  <p class="film-details__comment-text">Very very old. Meh</p>
-                  <p class="film-details__comment-info">
-                    <span class="film-details__comment-author">John Doe</span>
-                    <span class="film-details__comment-day">2 days ago</span>
-                    <button class="film-details__comment-delete">Delete</button>
-                  </p>
-                </div>
-              </li>
-              <li class="film-details__comment">
-                <span class="film-details__comment-emoji">
-                  <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji-angry">
-                </span>
-                <div>
-                  <p class="film-details__comment-text">Almost two hours? Seriously?</p>
-                  <p class="film-details__comment-info">
-                    <span class="film-details__comment-author">John Doe</span>
-                    <span class="film-details__comment-day">Today</span>
-                    <button class="film-details__comment-delete">Delete</button>
-                  </p>
-                </div>
-              </li>
             </ul>
 
             <div class="film-details__new-comment">
@@ -184,16 +155,49 @@ class Popup {
       </form>
     </section>
 `;
+
     const helperList = element.querySelectorAll('.film-details__cell');
-    for(let i = 0; i < this.genre.length; i++) {
+    for (let i = 0; i < this.genre.length; i++) {
       const genreElement = document.createElement('span');
       genreElement.classList.add('film-details__genre');
       genreElement.textContent = this.genre[i];
       helperList[helperList.length - 1].appendChild(genreElement);
+    }
+
+    for (const commentId of this.comments) {
+      for (const commentData of this.commentsArray) {
+        if (commentData.id === commentId) {
+          const newComment = document.createElement('li');
+          newComment.classList.add('film-details__comment');
+          const commentDate = new Date(commentData.date);
+          newComment.innerHTML = `
+            <span class="film-details__comment-emoji">
+              <img src="./images/emoji/${ commentData.emotion }.png" width="55" height="55" alt="emoji-${ commentData.emotion }">
+            </span>
+            <div>
+              <p class="film-details__comment-text">${ commentData.comment }</p>
+              <p class="film-details__comment-info">
+                <span class="film-details__comment-author">${ commentData.author }</span>
+                <span class="film-details__comment-day">${ new Intl.DateTimeFormat('en-GB', commentDateOptions).format(commentDate) }</span>
+                <button class="film-details__comment-delete">Delete</button>
+              </p>
+            </div>
+          `;
+          element.querySelector('.film-details__comments-list').appendChild(newComment);
+        }
+      }
+    }
+    if (this.watchlist) {
+      element.querySelector('#watchlist').classList.add('film-details__control-button--active');
+    }
+    if (this.favorite) {
+      element.querySelector('#favorite').classList.add('film-details__control-button--active');
+    }
+    if (this.watched) {
+      element.querySelector('#watched').classList.add('film-details__control-button--active');
     }
     return element;
   }
 }
 
 export { Popup };
-
