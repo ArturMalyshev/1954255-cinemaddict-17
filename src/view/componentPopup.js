@@ -5,33 +5,51 @@ function getTimeFromMins(mins) {
 }
 
 class Popup {
+  #name;
+  #originalName;
+  #img;
+  #rating;
+  #date;
+  #duration;
+  #genre;
+  #description;
+  #director;
+  #authors;
+  #actors;
+  #country;
+  #ageLimit;
+  #comments;
+  #watched;
+  #favorite;
+  #watchlist;
+  #commentsArray;
   constructor(filmInfoObject, commentsArray) {
-    this.name = filmInfoObject.film_info.title;
-    this.originalName = filmInfoObject.film_info.alternative_title;
-    this.img = filmInfoObject.film_info.poster;
-    this.rating = filmInfoObject.film_info.total_rating;
-    this.date = filmInfoObject.film_info.release.date;
-    this.duration = getTimeFromMins(filmInfoObject.film_info.runtime);
-    this.genre = filmInfoObject.film_info.genre;
-    this.description = filmInfoObject.film_info.description;
-    this.director = filmInfoObject.film_info.director;
-    this.authors = filmInfoObject.film_info.writers;
-    this.actors = filmInfoObject.film_info.actors;
-    this.country = filmInfoObject.film_info.release.release_country;
-    this.ageLimit = filmInfoObject.film_info.age_rating;
-    this.comments = filmInfoObject.comments;
-    this.watched = filmInfoObject.user_details.already_watched;
-    this.favorite = filmInfoObject.user_details.favorite;
-    this.watchlist = filmInfoObject.user_details.watchlist;
-    this.commentsArray = commentsArray;
+    this.#name = filmInfoObject.film_info.title;
+    this.#originalName = filmInfoObject.film_info.alternative_title;
+    this.#img = filmInfoObject.film_info.poster;
+    this.#rating = filmInfoObject.film_info.total_rating;
+    this.#date = filmInfoObject.film_info.release.date;
+    this.#duration = getTimeFromMins(filmInfoObject.film_info.runtime);
+    this.#genre = filmInfoObject.film_info.genre;
+    this.#description = filmInfoObject.film_info.description;
+    this.#director = filmInfoObject.film_info.director;
+    this.#authors = filmInfoObject.film_info.writers;
+    this.#actors = filmInfoObject.film_info.actors;
+    this.#country = filmInfoObject.film_info.release.release_country;
+    this.#ageLimit = filmInfoObject.film_info.age_rating;
+    this.#comments = filmInfoObject.comments;
+    this.#watched = filmInfoObject.user_details.already_watched;
+    this.#favorite = filmInfoObject.user_details.favorite;
+    this.#watchlist = filmInfoObject.user_details.watchlist;
+    this.#commentsArray = commentsArray;
   }
 
-  generate() {
+  get generate() {
     const element = document.createElement('section');
     element.classList.add('film-details');
-    const actors = this.actors.join(', ');
-    const authors = this.authors.join(', ');
-    const filmRelease = new Date(this.date);
+    const actors = this.#actors.join(', ');
+    const authors = this.#authors.join(', ');
+    const filmRelease = new Date(this.#date);
     const popupDateOptions = {
       year: 'numeric',
       month: 'long',
@@ -53,26 +71,26 @@ class Popup {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="${  this.img  }" alt="">
-              <p class="film-details__age">${  this.ageLimit  } +</p>
+              <img class="film-details__poster-img" src="${  this.#img  }" alt="">
+              <p class="film-details__age">${  this.#ageLimit  } +</p>
             </div>
 
             <div class="film-details__info">
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
-                  <h3 class="film-details__title">${  this.name  }</h3>
-                  <p class="film-details__title-original">Original: ${  this.originalName  }</p>
+                  <h3 class="film-details__title">${  this.#name  }</h3>
+                  <p class="film-details__title-original">Original: ${  this.#originalName  }</p>
                 </div>
 
                 <div class="film-details__rating">
-                  <p class="film-details__total-rating">${  this.rating  }</p>
+                  <p class="film-details__total-rating">${  this.#rating  }</p>
                 </div>
               </div>
 
               <table class="film-details__table">
                 <tr class="film-details__row">
                   <td class="film-details__term">Director</td>
-                  <td class="film-details__cell">${  this.director  }</td>
+                  <td class="film-details__cell">${  this.#director  }</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
@@ -88,11 +106,11 @@ class Popup {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${  this.duration  }</td>
+                  <td class="film-details__cell">${  this.#duration  }</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
-                  <td class="film-details__cell">${  this.country  }</td>
+                  <td class="film-details__cell">${  this.#country  }</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
@@ -102,7 +120,7 @@ class Popup {
                 </tr>
               </table>
               <p class="film-details__film-description">
-                ${  this.description  }
+                ${  this.#description  }
               </p>
             </div>
           </div>
@@ -116,7 +134,7 @@ class Popup {
 
         <div class="film-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${ this.comments.length }</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${ this.#comments.length }</span></h3>
 
             <ul class="film-details__comments-list">
             </ul>
@@ -157,15 +175,15 @@ class Popup {
 `;
 
     const helperList = element.querySelectorAll('.film-details__cell');
-    for (let i = 0; i < this.genre.length; i++) {
+    for (let i = 0; i < this.#genre.length; i++) {
       const genreElement = document.createElement('span');
       genreElement.classList.add('film-details__genre');
-      genreElement.textContent = this.genre[i];
+      genreElement.textContent = this.#genre[i];
       helperList[helperList.length - 1].appendChild(genreElement);
     }
 
-    for (const commentId of this.comments) {
-      for (const commentData of this.commentsArray) {
+    for (const commentId of this.#comments) {
+      for (const commentData of this.#commentsArray) {
         if (commentData.id === commentId) {
           const newComment = document.createElement('li');
           newComment.classList.add('film-details__comment');
@@ -187,15 +205,18 @@ class Popup {
         }
       }
     }
-    if (this.watchlist) {
+    if (this.#watchlist) {
       element.querySelector('#watchlist').classList.add('film-details__control-button--active');
     }
-    if (this.favorite) {
+    if (this.#favorite) {
       element.querySelector('#favorite').classList.add('film-details__control-button--active');
     }
-    if (this.watched) {
+    if (this.#watched) {
       element.querySelector('#watched').classList.add('film-details__control-button--active');
     }
+    element.querySelector('.film-details__close-btn').addEventListener('click', () => {
+      element.remove();
+    });
     return element;
   }
 }

@@ -1,25 +1,28 @@
 class Menu{
+  #watchlistNum;
+  #historyNum;
+  #favoritesNum;
   constructor(menuInfo) {
-    this.watchlistNum = menuInfo.watchlistNum;
-    this.historyNum = menuInfo.historyNum;
-    this.favoritesNum = menuInfo.favoritesNum;
+    this.#watchlistNum = menuInfo.watchlistNum;
+    this.#historyNum = menuInfo.historyNum;
+    this.#favoritesNum = menuInfo.favoritesNum;
   }
 
-  generateMenu() {
+  get menu() {
     const elementMenu = document.createElement('nav');
     elementMenu.classList.add('main-navigation');
     elementMenu.innerHTML = `
       <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
       <a href="#watchlist" class="main-navigation__item">Watchlist <span
-        class="main-navigation__item-count">${  this.watchlistNum  }</span></a>
+        class="main-navigation__item-count">${  this.#watchlistNum  }</span></a>
       <a href="#history" class="main-navigation__item">History <span
-        class="main-navigation__item-count">${  this.historyNum  }</span></a>
+        class="main-navigation__item-count">${  this.#historyNum  }</span></a>
       <a href="#favorites" class="main-navigation__item">Favorites <span
-        class="main-navigation__item-count">${  this.favoritesNum  }</span></a>`;
+        class="main-navigation__item-count">${  this.#favoritesNum  }</span></a>`;
     return elementMenu;
   }
 
-  generateSortMenu() {
+  get sortMenu() {
     const elementSortMenu = document.createElement('ul');
     elementSortMenu.classList.add('sort');
     elementSortMenu.innerHTML = `
@@ -30,7 +33,7 @@ class Menu{
     return elementSortMenu;
   }
 
-  generateShowMoreButton() {
+  get showMoreButton() {
     const button = document.createElement('button');
     button.classList.add('films-list__show-more');
     button.textContent = 'Show more';
