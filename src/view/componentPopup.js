@@ -216,6 +216,7 @@ class Popup {
     }
     element.querySelector('.film-details__close-btn').addEventListener('click', () => {
       element.remove();
+      document.body.classList.remove('hide-overflow');
     });
     return element;
   }

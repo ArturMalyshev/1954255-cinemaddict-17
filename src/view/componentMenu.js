@@ -37,6 +37,9 @@ class Menu{
     const button = document.createElement('button');
     button.classList.add('films-list__show-more');
     button.textContent = 'Show more';
+    button.addEventListener('click', (evt) => {
+      evt.preventDefault();
+    });
     return button;
   }
 }
