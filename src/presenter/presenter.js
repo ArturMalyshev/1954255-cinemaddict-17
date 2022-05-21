@@ -4,6 +4,7 @@ import { User } from '../view/componentUser.js';
 import { Menu } from '../view/componentMenu.js';
 import { Filmcard } from '../view/componentFilmcard.js';
 import { Popup } from '../view/componentPopup.js';
+import { MoreButton } from '../view/componentMoreButton.js';
 
 import {films, commentsArray, userInfo} from '../model/model.js';
 
@@ -11,7 +12,7 @@ const user = new User(userInfo).generate;
 const menuCopy = new Menu(userInfo);
 const menu = menuCopy.menu;
 const sortMenu = menuCopy.sortMenu;
-const showMoreButton = menuCopy.showMoreButton;
+const showMoreButton = new MoreButton(films).showMoreButton;
 
 render(user, document.querySelector('.header'));
 render(menu, document.querySelector('.main'), RenderPosition.AFTERBEGIN);

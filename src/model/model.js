@@ -1,6 +1,6 @@
 import { getFilmInformation, getCommentInformation, commentsData, filmData } from '../mock/data.js';
 
-const FILM_COUNT = 6; // 5 карточек и 1 попап
+const FILM_COUNT = 9; // 5 карточек и 1 попап
 const MAX_COMMENT_COUNT = 6;
 const films = [];
 

@@ -32,13 +32,6 @@ class Menu{
     `;
     return elementSortMenu;
   }
-
-  get showMoreButton() {
-    const button = document.createElement('button');
-    button.classList.add('films-list__show-more');
-    button.textContent = 'Show more';
-    return button;
-  }
 }
 
 export { Menu };
