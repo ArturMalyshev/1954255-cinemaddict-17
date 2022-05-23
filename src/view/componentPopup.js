@@ -1,10 +1,12 @@
+import AbstractView from '../framework/view/abstract-view';
+
 function getTimeFromMins(mins) {
   const hours = Math.trunc(mins/60);
   const minutes = mins % 60;
   return `${  hours  }h ${  minutes  }m`;
 }
 
-class Popup {
+export default class Popup extends AbstractView{
   #name;
   #originalName;
   #img;
@@ -23,7 +25,11 @@ class Popup {
   #favorite;
   #watchlist;
   #commentsArray;
+  #watchedClass;
+  #watchlistClass;
+  #favoriteClass;
   constructor(filmInfoObject, commentsArray) {
+    super();
     this.#name = filmInfoObject.film_info.title;
     this.#originalName = filmInfoObject.film_info.alternative_title;
     this.#img = filmInfoObject.film_info.poster;
@@ -42,11 +48,27 @@ class Popup {
     this.#favorite = filmInfoObject.user_details.favorite;
     this.#watchlist = filmInfoObject.user_details.watchlist;
     this.#commentsArray = commentsArray;
+
+    if (this.#watched) {
+      this.#watchedClass = 'film-details__control-button--active';
+    } else {
+      this.#watchedClass = '';
+    }
+
+    if (this.#watchlist) {
+      this.#watchlistClass = 'film-details__control-button--active';
+    } else {
+      this.#watchlistClass = '';
+    }
+
+    if (this.#favorite) {
+      this.#favoriteClass = 'film-details__control-button--active';
+    } else {
+      this.#favoriteClass = '';
+    }
   }
 
-  get generate() {
-    const element = document.createElement('section');
-    element.classList.add('film-details');
+  get template() {
     const actors = this.#actors.join(', ');
     const authors = this.#authors.join(', ');
     const filmRelease = new Date(this.#date);
@@ -62,7 +84,7 @@ class Popup {
       hour: 'numeric',
       minute: 'numeric'
     };
-    element.innerHTML = `
+    const temp = `
     <section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
@@ -126,9 +148,9 @@ class Popup {
           </div>
 
           <section class="film-details__controls">
-            <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-            <button type="button" class="film-details__control-button film-details__control-button--watched" id="watched" name="watched">Already watched</button>
-            <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
+            <button type="button" class="film-details__control-button film-details__control-button--watchlist ${ this.#watchlistClass }" id="watchlist" name="watchlist">Add to watchlist</button>
+            <button type="button" class="film-details__control-button film-details__control-button--watched ${ this.#watchedClass }" id="watched" name="watched">Already watched</button>
+            <button type="button" class="film-details__control-button film-details__control-button--favorite ${ this.#favoriteClass }" id="favorite" name="favorite">Add to favorites</button>
           </section>
         </div>
 
@@ -173,53 +195,44 @@ class Popup {
       </form>
     </section>
 `;
+    const shell = document.createElement('div');
+    shell.innerHTML = temp;
 
-    const helperList = element.querySelectorAll('.film-details__cell');
-    for (let i = 0; i < this.#genre.length; i++) {
+    const helperList = shell.querySelectorAll('.film-details__cell');
+    for(let i = 0; i < this.#genre.length; i++) {
       const genreElement = document.createElement('span');
       genreElement.classList.add('film-details__genre');
       genreElement.textContent = this.#genre[i];
       helperList[helperList.length - 1].appendChild(genreElement);
     }
 
-    for (const commentId of this.#comments) {
-      for (const commentData of this.#commentsArray) {
-        if (commentData.id === commentId) {
-          const newComment = document.createElement('li');
-          newComment.classList.add('film-details__comment');
-          const commentDate = new Date(commentData.date);
-          newComment.innerHTML = `
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/${ commentData.emotion }.png" width="55" height="55" alt="emoji-${ commentData.emotion }">
-            </span>
-            <div>
-              <p class="film-details__comment-text">${ commentData.comment }</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${ commentData.author }</span>
-                <span class="film-details__comment-day">${ new Intl.DateTimeFormat('en-GB', commentDateOptions).format(commentDate) }</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          `;
-          element.querySelector('.film-details__comments-list').appendChild(newComment);
-        }
+    this.#commentsArray.forEach((comment)=>{
+      if(comment.id in this.#comments){
+        const data = document.createElement('li');
+        data.classList.add('film-details__comment');
+        data.innerHTML = `<span class="film-details__comment-emoji">
+                          <img src="./images/emoji/${ comment.emotion }.png" width="55" height="55" alt="emoji-smile">
+                        </span>
+                        <div>
+                          <p class="film-details__comment-text">${ comment.comment }</p>
+                          <p class="film-details__comment-info">
+                            <span class="film-details__comment-author">${ comment.author }</span>
+                            <span class="film-details__comment-day">${ new Intl.DateTimeFormat('en-GB', commentDateOptions).format(new Date(comment.date)) }</span>
+                            <button class="film-details__comment-delete">Delete</button>
+                          </p>
+                        </div>`;
+        shell.querySelector('.film-details__comments-list').appendChild(data);
       }
-    }
-    if (this.#watchlist) {
-      element.querySelector('#watchlist').classList.add('film-details__control-button--active');
-    }
-    if (this.#favorite) {
-      element.querySelector('#favorite').classList.add('film-details__control-button--active');
-    }
-    if (this.#watched) {
-      element.querySelector('#watched').classList.add('film-details__control-button--active');
-    }
-    element.querySelector('.film-details__close-btn').addEventListener('click', () => {
-      element.remove();
-      document.body.classList.remove('hide-overflow');
     });
-    return element;
+    return shell.innerHTML;
   }
+
+  closeButtonClickHandler = (callback) => {
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', callback);
+  };
+
+
 }
+
 
 export { Popup };
