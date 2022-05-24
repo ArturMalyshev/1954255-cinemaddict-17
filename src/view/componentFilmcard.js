@@ -1,10 +1,12 @@
+import AbstractView from '../framework/view/abstract-view';
+
 function getTimeFromMins(mins) {
   const hours = Math.trunc(mins/60);
   const minutes = mins % 60;
   return `${  hours  }h ${  minutes  }m`;
 }
 
-class Filmcard {
+export default class Filmcard extends AbstractView{
   #name;
   #img;
   #rating;
@@ -16,7 +18,11 @@ class Filmcard {
   #watched;
   #favorite;
   #watchlist;
+  #watchlistClass;
+  #watchedClass;
+  #favoriteClass;
   constructor(filmInfoObject) {
+    super();
     this.#name = filmInfoObject.film_info.title;
     this.#img = filmInfoObject.film_info.poster;
     this.#rating = filmInfoObject.film_info.total_rating;
@@ -28,12 +34,29 @@ class Filmcard {
     this.#watched = filmInfoObject.user_details.already_watched;
     this.#favorite = filmInfoObject.user_details.favorite;
     this.#watchlist = filmInfoObject.user_details.watchlist;
+
+    if (this.#watched) {
+      this.#watchedClass = 'film-card__controls-item--active';
+    } else {
+      this.#watchedClass = '';
+    }
+
+    if (this.#watchlist) {
+      this.#watchlistClass = 'film-card__controls-item--active';
+    } else {
+      this.#watchlistClass = '';
+    }
+
+    if (this.#favorite) {
+      this.#favoriteClass = 'film-card__controls-item--active';
+    } else {
+      this.#favoriteClass = '';
+    }
   }
 
-  get generate() {
-    const card = document.createElement('article');
-    card.classList.add('film-card');
-    card.innerHTML = `
+  get template() {
+    return `
+      <article class="film-card">
         <a class="film-card__link">
           <h3 class="film-card__title">${  this.#name  }</h3>
           <p class="film-card__rating">${  this.#rating  }</p>
@@ -47,27 +70,21 @@ class Filmcard {
             <span class="film-card__comments">${  this.#commentCount  } comments</span>
         </a>
         <div class="film-card__controls">
-          <button class="film-card__controls-item film-card__controls-item--add-to-watchlist" type="button">Add to
+          <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${ this.#watchlistClass }" type="button">Add to
             watchlist
           </button>
-          <button class="film-card__controls-item film-card__controls-item--mark-as-watched" type="button">
+          <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${ this.#watchedClass }" type="button">
           Mark as watched
           </button>
-          <button class="film-card__controls-item film-card__controls-item--favorite" type="button">Mark as favorite
+          <button class="film-card__controls-item film-card__controls-item--favorite ${ this.#favoriteClass }" type="button">Mark as favorite
           </button>
         </div>
+      </article>
     `;
-    if (this.#watched) {
-      card.querySelector('.film-card__controls-item--mark-as-watched').classList.add('film-card__controls-item--active');
-    }
-    if (this.#watchlist) {
-      card.querySelector('.film-card__controls-item--add-to-watchlist').classList.add('film-card__controls-item--active');
-    }
-    if (this.#favorite) {
-      card.querySelector('.film-card__controls-item--favorite').classList.add('film-card__controls-item--active');
-    }
-    return card;
   }
+
+  filmCardClickHandler = (callback) => {
+    this.element.addEventListener('click', callback);
+  };
 }
 
-export { Filmcard };

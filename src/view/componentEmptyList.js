@@ -1,35 +1,29 @@
-class EmptyList {
+import AbstractView from '../framework/view/abstract-view';
+
+export default class EmptyList extends AbstractView{
   #textAllMovies = 'There are no movies in our database';
   #textWatchlist = 'There are no movies to watch now';
   #textHistory = 'There are no watched movies now';
   #textFavorites = 'There are no favorite movies now';
 
   get EmptyAllMovies() {
-    const text = document.createElement('h2');
-    text.classList.add('films-list__title');
-    text.textContent = this.#textAllMovies;
-    return text;
+    return `<h2 class="films-list__title"> ${ this.#textAllMovies }</h2>`;
   }
 
   get EmptyWatchlist() {
-    const text = document.createElement('h2');
-    text.classList.add('films-list__title');
-    text.textContent = this.#textWatchlist;
-    return text;
+    return `<h2 class="films-list__title"> ${ this.#textWatchlist }</h2>`;
   }
 
   get EmptyHistory() {
-    const text = document.createElement('h2');
-    text.classList.add('films-list__title');
-    text.textContent = this.#textHistory;
-    return text;
+    return `<h2 class="films-list__title"> ${ this.#textHistory }</h2>`;
   }
 
   get EmptyFavorites() {
-    const text = document.createElement('h2');
-    text.classList.add('films-list__title');
-    text.textContent = this.#textFavorites;
-    return text;
+    return `<h2 class="films-list__title"> ${ this.#textFavorites }</h2>`;
+  }
+
+  get template() {
+    return this.EmptyAllMovies;
   }
 }
 
