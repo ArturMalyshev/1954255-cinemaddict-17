@@ -6,9 +6,25 @@ export default class Menu extends AbstractView{
   #favoritesNum;
   constructor(menuInfo) {
     super();
-    this.#watchlistNum = menuInfo.watchlistNum;
-    this.#historyNum = menuInfo.historyNum;
-    this.#favoritesNum = menuInfo.favoritesNum;
+    this.#watchlistNum = [];
+    this.#historyNum = [];
+    this.#favoritesNum = [];
+
+    menuInfo.forEach((film)=>{
+      if(film.user_details.watchlist){
+        this.#watchlistNum.push(film.user_details.watchlist);
+      }
+      if(film.user_details.already_watched) {
+        this.#historyNum.push(film.user_details.already_watched);
+      }
+      if(film.user_details.favorite){
+        this.#favoritesNum.push(film.user_details.favorite);
+      }
+    });
+
+    this.#watchlistNum = this.#watchlistNum.length;
+    this.#historyNum = this.#historyNum.length;
+    this.#favoritesNum = this.#favoritesNum.length;
   }
 
   get template() {
@@ -22,4 +38,8 @@ export default class Menu extends AbstractView{
         class="main-navigation__item-count">${  this.#favoritesNum  }</span></a>
     </nav>`;
   }
+
+  menuClickHandler = (callback, element) => {
+    document.body.querySelector(element).addEventListener('click', callback);
+  };
 }
