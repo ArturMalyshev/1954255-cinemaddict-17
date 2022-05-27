@@ -22,5 +22,5 @@ const userInfo = {
   historyNum: 32,
   favoritesNum: 12
 };
-
-export {films, commentsArray, userInfo};
+const filmsArrayFromModel = films;
+export {filmsArrayFromModel, commentsArray, userInfo};
