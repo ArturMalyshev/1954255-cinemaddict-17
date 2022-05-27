@@ -1,12 +1,12 @@
 import { render, RenderPosition, remove } from '../framework/render.js';
 
-import User from '../view/componentUser.js';
-import Menu from '../view/componentMenu.js';
-import Filmcard from '../view/componentFilmcard.js';
-import Popup from '../view/componentPopup.js';
-import EmptyList from '../view/componentEmptyList.js';
-import SortMenu from '../view/componentSortMenu.js';
-import ShowMoreButton from '../view/componentShowMoreButton.js';
+import User from '../view/user.js';
+import Menu from '../view/menu.js';
+import Filmcard from '../view/filmcard.js';
+import Popup from '../view/popup.js';
+import EmptyList from '../view/empty-list.js';
+import SortMenu from '../view/sort-menu.js';
+import ShowMoreButton from '../view/show-more-button.js';
 
 import { filmsArrayFromModel, commentsArray, userInfo } from '../model/model.js';
 
@@ -29,10 +29,12 @@ document.querySelectorAll('.sort__button').forEach((button)=>{
     if(!button.classList.contains('sort__button--active')) {
       button.classList.add('sort__button--active');
     }
+    // eslint-disable-next-line no-shadow
     const films = sortMenu.filmList;
 
     document.querySelector('.films-list__container').innerHTML='';
 
+    // eslint-disable-next-line no-shadow
     const renderer = (filmsArray, emptyTemplate) => {
       // const filmsArray = sortMenu.filmList;
       if (filmsArray.length === 0) {
@@ -75,6 +77,7 @@ document.querySelectorAll('.sort__button').forEach((button)=>{
       }
     };
 
+    // eslint-disable-next-line no-shadow
     menuCopy.menuClickHandler((evt) => {
       evt.preventDefault();
       document.querySelector('.films-list').innerHTML = '<div class="films-list__container"></div>';
@@ -114,6 +117,7 @@ document.querySelectorAll('.sort__button').forEach((button)=>{
       });
     }, '[href="#all"]');
 
+    // eslint-disable-next-line no-shadow
     menuCopy.menuClickHandler((evt) => {
       evt.preventDefault();
       document.querySelector('.films-list').innerHTML = '<div class="films-list__container"></div>';
@@ -183,6 +187,7 @@ document.querySelectorAll('.sort__button').forEach((button)=>{
       });
     }, '[href="#watchlist"]');
 
+    // eslint-disable-next-line no-shadow
     menuCopy.menuClickHandler((evt) => {
       evt.preventDefault();
       document.querySelector('.films-list').innerHTML = '<div class="films-list__container"></div>';
@@ -252,6 +257,7 @@ document.querySelectorAll('.sort__button').forEach((button)=>{
       });
     }, '[href="#history"]');
 
+    // eslint-disable-next-line no-shadow
     menuCopy.menuClickHandler((evt) => {
       evt.preventDefault();
       document.querySelector('.films-list').innerHTML = '<div class="films-list__container"></div>';
@@ -320,6 +326,7 @@ document.querySelectorAll('.sort__button').forEach((button)=>{
       });
     }, '[href="#favorites"]');
 
+    // eslint-disable-next-line no-shadow
     const content = new EmptyList().EmptyAllMovies;
     renderer(films.slice(), content);
     showMoreButton.setClickHandler(() => {
