@@ -14,8 +14,8 @@ export default class Menu extends AbstractView{
       if(film.user_details.watchlist){
         this.#watchlistNum.push(film.user_details.watchlist);
       }
-      if(film.user_details.already_watched) {
-        this.#historyNum.push(film.user_details.already_watched);
+      if(film.user_details.alreadyWatched) {
+        this.#historyNum.push(film.user_details.alreadyWatched);
       }
       if(film.user_details.favorite){
         this.#favoritesNum.push(film.user_details.favorite);

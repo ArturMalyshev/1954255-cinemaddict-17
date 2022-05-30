@@ -28,8 +28,10 @@ export default class Popup extends AbstractView{
   #watchedClass;
   #watchlistClass;
   #favoriteClass;
+  #filmId;
   constructor(filmInfoObject, commentsArray) {
     super();
+    this.#filmId = filmInfoObject.id;
     this.#name = filmInfoObject.film_info.title;
     this.#originalName = filmInfoObject.film_info.alternative_title;
     this.#img = filmInfoObject.film_info.poster;
@@ -44,7 +46,7 @@ export default class Popup extends AbstractView{
     this.#country = filmInfoObject.film_info.release.release_country;
     this.#ageLimit = filmInfoObject.film_info.age_rating;
     this.#comments = filmInfoObject.comments;
-    this.#watched = filmInfoObject.user_details.already_watched;
+    this.#watched = filmInfoObject.user_details.alreadyWatched;
     this.#favorite = filmInfoObject.user_details.favorite;
     this.#watchlist = filmInfoObject.user_details.watchlist;
     this.#commentsArray = commentsArray;
@@ -231,7 +233,21 @@ export default class Popup extends AbstractView{
     this.element.querySelector('.film-details__close-btn').addEventListener('click', callback);
   };
 
+  popupWatchlistClickHandler = (callback) => {
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', callback);
+  };
 
+  popupFavoriteClickHandler = (callback) => {
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', callback);
+  };
+
+  popupWatchedClickHandler = (callback) => {
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', callback);
+  };
+
+  get filmId () {
+    return this.#filmId;
+  }
 }
 
 
