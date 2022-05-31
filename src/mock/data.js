@@ -148,7 +148,7 @@ const getFilmInformation = (filmMockData) => {
     comments.push(i);
   }
   const filmInfo = {
-    'id': '0',
+    'id': getRandom(0, 1000),
     'comments': comments,
     'film_info': {
       'title': filmMockData.filmInfo.title[getRandom(0,filmMockData.filmInfo.title.length)],
@@ -176,7 +176,7 @@ const getFilmInformation = (filmMockData) => {
     },
     'user_details': {
       'watchlist': filmMockData.filmInfo.userDetailsWatchlist[getRandom(0, filmMockData.filmInfo.userDetailsWatchlist.length)],
-      'already_watched': filmMockData.filmInfo.userDetailsAlreadiWatched[getRandom(0, filmMockData.filmInfo.userDetailsAlreadiWatched.length)],
+      'alreadyWatched': filmMockData.filmInfo.userDetailsAlreadiWatched[getRandom(0, filmMockData.filmInfo.userDetailsAlreadiWatched.length)],
       'watching_date': filmMockData.filmInfo.userDetailsWatchingDate[getRandom(0, filmMockData.filmInfo.userDetailsWatchingDate.length)],
       'favorite': filmMockData.filmInfo.userDetailsFavorite[getRandom(0, filmMockData.filmInfo.userDetailsFavorite.length)]
     }
