@@ -6,12 +6,7 @@ export default class ShowMoreButton extends AbstractView{
   }
 
   setClickHandler = (callback) => {
-    this._callback.click = callback;
-    this.element.addEventListener('click', this.#clickHandler);
-  };
-
-  #clickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.click();
+    console.log(this.element);
+    this.element.addEventListener('click', callback);
   };
 }

@@ -4,32 +4,16 @@ export default class Menu extends AbstractView{
   #watchlistNum;
   #historyNum;
   #favoritesNum;
-  constructor(menuInfo) {
+  constructor(menuInfoCount) {
     super();
-    this.#watchlistNum = [];
-    this.#historyNum = [];
-    this.#favoritesNum = [];
-
-    menuInfo.forEach((film)=>{
-      if(film.user_details.watchlist){
-        this.#watchlistNum.push(film.user_details.watchlist);
-      }
-      if(film.user_details.alreadyWatched) {
-        this.#historyNum.push(film.user_details.alreadyWatched);
-      }
-      if(film.user_details.favorite){
-        this.#favoritesNum.push(film.user_details.favorite);
-      }
-    });
-
-    this.#watchlistNum = this.#watchlistNum.length;
-    this.#historyNum = this.#historyNum.length;
-    this.#favoritesNum = this.#favoritesNum.length;
+    this.#watchlistNum = menuInfoCount.watchlist;
+    this.#historyNum = menuInfoCount.history;
+    this.#favoritesNum = menuInfoCount.favorite;
   }
 
   get template() {
     return `<nav class="main-navigation">
-      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
+      <a href="#all" class="main-navigation__item">All movies</a>
       <a href="#watchlist" class="main-navigation__item">Watchlist <span
         class="main-navigation__item-count">${  this.#watchlistNum  }</span></a>
       <a href="#history" class="main-navigation__item">History <span
@@ -40,6 +24,9 @@ export default class Menu extends AbstractView{
   }
 
   menuClickHandler = (callback, element) => {
-    document.body.querySelector(element).addEventListener('click', callback);
+    const buttons = document.body.querySelectorAll(element);
+    buttons.forEach((button)=>{
+      button.addEventListener('click', callback);
+    });
   };
 }
