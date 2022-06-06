@@ -1,6 +1,6 @@
 import { getFilmInformation, getCommentInformation, commentsData, filmData } from '../mock/data.js';
 
-const FILM_COUNT = 1;
+const FILM_COUNT = 8;
 const MAX_COMMENT_COUNT = 6;
 const films = [];
 
