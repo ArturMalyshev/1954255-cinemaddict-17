@@ -80,6 +80,7 @@ export default class PresenterSortMenu extends AbstractView{
         new PresenterMovie(filmsArray[i], commentsArray, render, RenderPosition, Filmcard, Popup).filmcard();
       }
       render(this.#showMoreButton, document.querySelector('.films-list'), RenderPosition.BEFOREEND);
+      this.#showMoreButton.removeClickHandler();
       this.#showMoreButton.setClickHandler(()=>{
         const filmsArray2 = filmsArray.slice(RenderedFilmcards2, RenderedFilmcards + FILMCARD_COUNT_PER_STEP);
         for (let i = 0; i < filmsArray2.length; i++) {
@@ -105,6 +106,7 @@ export default class PresenterSortMenu extends AbstractView{
     } else {
       this.renderer(this.#filmsArray);
     }
+    return '';
   }
 
   set filmList (value) {

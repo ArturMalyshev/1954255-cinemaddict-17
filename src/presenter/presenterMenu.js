@@ -1,12 +1,8 @@
 import Menu from '../view/menu';
 import AbstractView from '../framework/view/abstract-view';
-import {remove, render, RenderPosition} from '../framework/render';
+import { render, RenderPosition} from '../framework/render';
 import PresenterSortMenu from './presenterSortMenu';
-import {commentsArray, filmsArrayFromModel} from '../model/model';
-import PresenterMovie from './presenterMovie';
-import Filmcard from '../view/filmcard';
-import Popup from '../view/popup';
-import ShowMoreButton from '../view/show-more-button';
+import {filmsArrayFromModel} from '../model/model';
 
 export default class PresenterMenu extends AbstractView {
   #allFilms;
@@ -60,12 +56,13 @@ export default class PresenterMenu extends AbstractView {
     const sortMenu = new PresenterSortMenu(filmsArrayFromModel);
     sortMenu.template;
 
-    const showMoreButton = new ShowMoreButton();
-
     this.#menu = new Menu(this.#filmCount);
     render(this.#menu, document.querySelector('.main'), RenderPosition.AFTERBEGIN);
     this.#menu.menuClickHandler((evt)=>{
       evt.preventDefault();
+      if (document.querySelector('.films-list__show-more')) {
+        document.querySelector('.films-list__show-more').remove();
+      }
       if (!evt.path[0].classList.contains('main-navigation__item--active')) {
         if (document.querySelector('.main-navigation__item--active')) {
           document.querySelector('.main-navigation__item--active').classList.remove('main-navigation__item--active');
@@ -82,6 +79,8 @@ export default class PresenterMenu extends AbstractView {
         if(!button.classList.contains('sort__button--active')) {
           document.querySelector('.sort__button--active').classList.remove('sort__button--active');
           button.classList.add('sort__button--active');
+          document.querySelector('.films-list__container').innerHTML ='';
+          sortMenu.filmList;
         }
       });
     });

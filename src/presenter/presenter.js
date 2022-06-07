@@ -7,7 +7,6 @@ import PresenterMenu from './presenterMenu';
 
 const user = new User(userInfo);
 
-
 const menu = new PresenterMenu(filmsArrayFromModel);
 menu.template;
 
