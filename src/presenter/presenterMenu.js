@@ -54,6 +54,7 @@ export default class PresenterMenu extends AbstractView {
 
   get template () {
     const sortMenu = new PresenterSortMenu(filmsArrayFromModel);
+    // eslint-disable-next-line no-unused-expressions
     sortMenu.template;
 
     this.#menu = new Menu(this.#filmCount);
@@ -69,6 +70,7 @@ export default class PresenterMenu extends AbstractView {
         }
         evt.path[0].classList.add('main-navigation__item--active');
         sortMenu.filmList = this.getFilmArray;
+        // eslint-disable-next-line no-unused-expressions
         sortMenu.filmList;
       }
     }, '.main-navigation__item');
@@ -80,6 +82,7 @@ export default class PresenterMenu extends AbstractView {
           document.querySelector('.sort__button--active').classList.remove('sort__button--active');
           button.classList.add('sort__button--active');
           document.querySelector('.films-list__container').innerHTML ='';
+          // eslint-disable-next-line no-unused-expressions
           sortMenu.filmList;
         }
       });
