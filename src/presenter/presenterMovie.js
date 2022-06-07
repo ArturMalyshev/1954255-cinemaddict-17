@@ -29,6 +29,8 @@ export default class PresenterMovie extends AbstractView{
       document.body.classList.remove('hide-overflow');
     });
 
+    popup.popupEmotionClickHandler();
+
     popup.popupWatchlistClickHandler((evt)=>{
       evt.preventDefault();
       const watchListButton = popup.element.querySelector('.film-details__control-button--watchlist');

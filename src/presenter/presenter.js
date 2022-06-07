@@ -7,8 +7,8 @@ import PresenterMenu from './presenterMenu';
 
 const user = new User(userInfo);
 
-
 const menu = new PresenterMenu(filmsArrayFromModel);
+// eslint-disable-next-line no-unused-expressions
 menu.template;
 
 render(user, document.querySelector('.header'));

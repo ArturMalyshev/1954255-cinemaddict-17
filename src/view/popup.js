@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
 function getTimeFromMins(mins) {
   const hours = Math.trunc(mins/60);
@@ -6,7 +6,9 @@ function getTimeFromMins(mins) {
   return `${  hours  }h ${  minutes  }m`;
 }
 
-export default class Popup extends AbstractView{
+const EMOJI_SIZE_IN_PX = 55;
+
+export default class Popup extends AbstractStatefulView{
   #name;
   #originalName;
   #img;
@@ -28,9 +30,53 @@ export default class Popup extends AbstractView{
   #watchedClass;
   #watchlistClass;
   #favoriteClass;
+  #emoji;
   #filmId;
+  #closeButtonHandler;
+  #popupWatchlistHandler;
+  #popupFavoriteHandler;
+  #popupWatchedHandler;
   constructor(filmInfoObject, commentsArray) {
     super();
+    this._restoreHandlers = () => {
+      const emotionPlace = document.querySelector('.film-details__add-emoji-label');
+      const image = document.createElement('img');
+      let emoji = null;
+      switch (this.#emoji.emoji) {
+        case 'emoji-smile':
+          emoji = 'smile';
+          break;
+        case 'emoji-angry':
+          emoji = 'angry';
+          break;
+        case 'emoji-puke':
+          emoji = 'puke';
+          break;
+        case 'emoji-sleeping':
+          emoji = 'sleeping';
+          break;
+      }
+      image.src = `images/emoji/${ emoji }.png`;
+      image.width = EMOJI_SIZE_IN_PX;
+      image.alt = this.#emoji.emoji;
+      emotionPlace.appendChild(image);
+
+      document.querySelector(`#${ this.#emoji.emoji }`).setAttribute('checked', 'checked');
+
+      this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeButtonHandler);
+
+      this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#popupWatchlistHandler);
+
+      this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#popupFavoriteHandler);
+
+      this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#popupWatchedHandler);
+
+      this.element.querySelectorAll('.film-details__emoji-item').forEach((smile)=>{
+        smile.addEventListener('click', this.#EmotionToggleHandler);
+      });
+
+      this.element.scrollBy(0, this.element.scrollHeight);
+    };
     this.#filmId = filmInfoObject.id;
     this.#name = filmInfoObject.film_info.title;
     this.#originalName = filmInfoObject.film_info.alternative_title;
@@ -230,24 +276,38 @@ export default class Popup extends AbstractView{
   }
 
   closeButtonClickHandler = (callback) => {
+    this.#closeButtonHandler = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', callback);
   };
 
   popupWatchlistClickHandler = (callback) => {
+    this.#popupWatchlistHandler = callback;
     this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', callback);
   };
 
   popupFavoriteClickHandler = (callback) => {
+    this.#popupFavoriteHandler = callback;
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', callback);
   };
 
   popupWatchedClickHandler = (callback) => {
+    this.#popupWatchedHandler = callback;
     this.element.querySelector('.film-details__control-button--watched').addEventListener('click', callback);
   };
 
-  get filmId () {
-    return this.#filmId;
-  }
+  popupEmotionClickHandler = () => {
+    this.element.querySelectorAll('.film-details__emoji-item').forEach((smile)=>{
+      smile.addEventListener('click', this.#EmotionToggleHandler);
+    });
+  };
+
+  #EmotionToggleHandler = (evt) => {
+    evt.srcElement.setAttribute('checked', 'true');
+    this.#emoji = {
+      emoji: evt.srcElement.getAttribute('id')
+    };
+    this.updateElement(this.#emoji);
+  };
 }
 
 
