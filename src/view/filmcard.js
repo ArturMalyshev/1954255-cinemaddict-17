@@ -1,9 +1,12 @@
 import AbstractView from '../framework/view/abstract-view';
+import dayjs from 'dayjs';
 
 function getTimeFromMins(mins) {
-  const hours = Math.trunc(mins/60);
-  const minutes = mins % 60;
-  return `${  hours  }h ${  minutes  }m`;
+  if (mins > 59) {
+    return dayjs().minute(mins+60).format('H[h] m[m]');
+  } else {
+    return dayjs().minute(mins).format('m[m]');
+  }
 }
 
 export default class Filmcard extends AbstractView{

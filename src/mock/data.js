@@ -147,7 +147,7 @@ const getFilmInformation = (filmMockData) => {
   for (let i = 0; i < getRandom(0, 6); i++) {
     comments.push(i);
   }
-  const filmInfo = {
+  return {
     'id': getRandom(0, 1000),
     'comments': comments,
     'film_info': {
@@ -167,7 +167,7 @@ const getFilmInformation = (filmMockData) => {
         'date': filmMockData.filmInfo.releaseDate[getRandom(0, filmMockData.filmInfo.releaseDate.length)],
         'release_country': filmMockData.filmInfo.releaseCountry[getRandom(0, filmMockData.filmInfo.releaseCountry.length)],
       },
-      'runtime': getRandom(54, 182),
+      'runtime': getRandom(32, 182),
       'genre': [
         filmMockData.filmInfo.genre[getRandom(0, filmMockData.filmInfo.genre.length)],
         filmMockData.filmInfo.genre[getRandom(0, filmMockData.filmInfo.genre.length)],
@@ -181,18 +181,14 @@ const getFilmInformation = (filmMockData) => {
       'favorite': filmMockData.filmInfo.userDetailsFavorite[getRandom(0, filmMockData.filmInfo.userDetailsFavorite.length)]
     }
   };
-  return filmInfo;
 };
 
-const getCommentInformation = (commentMockData, commentId) => {
-  const newComment = {
-    'id': commentId,
-    'author': commentMockData.author[getRandom(0, commentMockData.author.length)],
-    'comment': commentMockData.comment[getRandom(0, commentMockData.comment.length)],
-    'date': commentMockData.date[getRandom(0, commentMockData.date.length)],
-    'emotion': commentMockData.emotion[getRandom(0, commentMockData.emotion.length)]
-  };
-  return newComment;
-};
+const getCommentInformation = (commentMockData, commentId) => ({
+  'id': commentId,
+  'author': commentMockData.author[getRandom(0, commentMockData.author.length)],
+  'comment': commentMockData.comment[getRandom(0, commentMockData.comment.length)],
+  'date': commentMockData.date[getRandom(0, commentMockData.date.length)],
+  'emotion': commentMockData.emotion[getRandom(0, commentMockData.emotion.length)]
+});
 
 export { getFilmInformation, getCommentInformation, commentsData, filmData };
