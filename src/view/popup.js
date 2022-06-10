@@ -1,9 +1,14 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 function getTimeFromMins(mins) {
-  const hours = Math.trunc(mins/60);
-  const minutes = mins % 60;
-  return `${  hours  }h ${  minutes  }m`;
+  if (mins > 59) {
+    return dayjs().minute(mins+60).format('H[h] m[m]');
+  } else {
+    return dayjs().minute(mins).format('m[m]');
+  }
 }
 
 const EMOJI_SIZE_IN_PX = 55;
@@ -120,18 +125,6 @@ export default class Popup extends AbstractStatefulView{
     const actors = this.#actors.join(', ');
     const authors = this.#authors.join(', ');
     const filmRelease = new Date(this.#date);
-    const popupDateOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    };
-    const commentDateOptions = {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric'
-    };
     const temp = `
     <section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -172,7 +165,7 @@ export default class Popup extends AbstractStatefulView{
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${  new Intl.DateTimeFormat('en-GB', popupDateOptions).format(filmRelease) }</td>
+                  <td class="film-details__cell">${  dayjs(filmRelease).format('D MMMM YYYY')  }</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
@@ -265,7 +258,7 @@ export default class Popup extends AbstractStatefulView{
                           <p class="film-details__comment-text">${ comment.comment }</p>
                           <p class="film-details__comment-info">
                             <span class="film-details__comment-author">${ comment.author }</span>
-                            <span class="film-details__comment-day">${ new Intl.DateTimeFormat('en-GB', commentDateOptions).format(new Date(comment.date)) }</span>
+                            <span class="film-details__comment-day">${ dayjs(comment.date).fromNow() }</span>
                             <button class="film-details__comment-delete">Delete</button>
                           </p>
                         </div>`;
