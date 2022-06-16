@@ -56,7 +56,6 @@ export default class PresenterMenu extends AbstractView {
     const sortMenu = new PresenterSortMenu(new MovieModel().template);
     // eslint-disable-next-line no-unused-expressions
     sortMenu.template;
-
     this.#menu = new Menu(this.#filmCount);
     render(this.#menu, document.querySelector('.main'), RenderPosition.AFTERBEGIN);
     this.#menu.menuClickHandler((evt)=>{

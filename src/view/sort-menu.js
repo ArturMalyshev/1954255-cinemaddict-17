@@ -1,13 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 
 export default class SortMenu extends AbstractView{
-  #filmsArray;
-
-  constructor(allFilms) {
-    super();
-    this.#filmsArray = allFilms;
-  }
-
   get template() {
     return `<ul class="sort">
         <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
