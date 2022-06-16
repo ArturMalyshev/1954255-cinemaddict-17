@@ -2,12 +2,13 @@ import AbstractView from '../framework/view/abstract-view';
 import SortMenu from '../view/sort-menu.js';
 import {remove, render, RenderPosition} from '../framework/render';
 import PresenterMenu from './presenterMenu';
-import {commentsArray, filmsArrayFromModel} from '../model/model';
 import PresenterMovie from './presenterMovie';
 import Filmcard from '../view/filmcard.js';
 import Popup from '../view/popup.js';
 import ShowMoreButton from '../view/show-more-button';
 import EmptyList from '../view/empty-list';
+import MovieModel from "../model/movieModel";
+import CommentsModel from "../model/commentsModel";
 
 
 export default class PresenterSortMenu extends AbstractView{
@@ -19,7 +20,7 @@ export default class PresenterSortMenu extends AbstractView{
   constructor(films) {
     super();
     this.#filmsArray = films;
-    this.#menu = new PresenterMenu(filmsArrayFromModel);
+    this.#menu = new PresenterMenu(new MovieModel().template);
     this.#FILMCARD_COUNT_PER_STEP = 5;
     this.#RenderedFilmcards = 5;
     this.#showMoreButton = new ShowMoreButton();
@@ -70,21 +71,21 @@ export default class PresenterSortMenu extends AbstractView{
         document.querySelector('.sort').style.visibility = 'visible';
       }
       for (let i = 0; i < filmsArray.length; i++) {
-        new PresenterMovie(filmsArray[i], commentsArray, render, RenderPosition, Filmcard, Popup).filmcard();
+        new PresenterMovie(filmsArray[i], new CommentsModel().template, render, RenderPosition, Filmcard, Popup).filmcard();
       }
     } else {
       if (document.querySelector('.sort').style.visibility === 'hidden') {
         document.querySelector('.sort').style.visibility = 'visible';
       }
       for (let i = 0; i < this.#FILMCARD_COUNT_PER_STEP; i++) {
-        new PresenterMovie(filmsArray[i], commentsArray, render, RenderPosition, Filmcard, Popup).filmcard();
+        new PresenterMovie(filmsArray[i], new CommentsModel().template, render, RenderPosition, Filmcard, Popup).filmcard();
       }
       render(this.#showMoreButton, document.querySelector('.films-list'), RenderPosition.BEFOREEND);
       this.#showMoreButton.removeClickHandler();
       this.#showMoreButton.setClickHandler(()=>{
         const filmsArray2 = filmsArray.slice(RenderedFilmcards2, RenderedFilmcards + FILMCARD_COUNT_PER_STEP);
         for (let i = 0; i < filmsArray2.length; i++) {
-          new PresenterMovie(filmsArray2[i], commentsArray, render, RenderPosition, Filmcard, Popup).filmcard();
+          new PresenterMovie(filmsArray2[i], new CommentsModel().template, render, RenderPosition, Filmcard, Popup).filmcard();
         }
         RenderedFilmcards2 += FILMCARD_COUNT_PER_STEP;
         if (RenderedFilmcards2 >= filmsArray.length) {
