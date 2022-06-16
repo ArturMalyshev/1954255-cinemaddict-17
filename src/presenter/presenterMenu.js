@@ -2,7 +2,7 @@ import Menu from '../view/menu';
 import AbstractView from '../framework/view/abstract-view';
 import { render, RenderPosition} from '../framework/render';
 import PresenterSortMenu from './presenterSortMenu';
-import {filmsArrayFromModel} from '../model/model';
+import MovieModel from "../model/movieModel";
 
 export default class PresenterMenu extends AbstractView {
   #allFilms;
@@ -53,10 +53,9 @@ export default class PresenterMenu extends AbstractView {
   }
 
   get template () {
-    const sortMenu = new PresenterSortMenu(filmsArrayFromModel);
+    const sortMenu = new PresenterSortMenu(new MovieModel().template);
     // eslint-disable-next-line no-unused-expressions
     sortMenu.template;
-
     this.#menu = new Menu(this.#filmCount);
     render(this.#menu, document.querySelector('.main'), RenderPosition.AFTERBEGIN);
     this.#menu.menuClickHandler((evt)=>{
