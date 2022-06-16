@@ -1,5 +1,5 @@
 import { render } from '../framework/render.js';
-shimport User from '../view/user.js';
+import User from '../view/user.js';
 import UserModel from '../model/userModel'
 import PresenterMenu from './presenterMenu';
 import MovieModel from "../model/movieModel";
