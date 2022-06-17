@@ -9,8 +9,10 @@ export default class SortMenu extends AbstractView{
       </ul>`;
   }
 
-  sortMenuClickHandler = (callback, element) => {
-    document.body.querySelector(element).addEventListener('click', callback);
+  sortMenuClickHandler = (callback) => {
+    document.querySelectorAll('.sort__button').forEach((element)=>{
+      element.addEventListener('click', callback);
+    });
   };
 }
 

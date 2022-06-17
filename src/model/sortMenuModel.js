@@ -16,5 +16,5 @@ export default class SortMenuModel {
     } else {
       return this.#filmArray;
     }
-  }
+  };
 }

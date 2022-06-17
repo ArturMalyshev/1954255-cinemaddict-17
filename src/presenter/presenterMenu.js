@@ -2,7 +2,7 @@ import Menu from '../view/menu';
 import AbstractView from '../framework/view/abstract-view';
 import { render, RenderPosition} from '../framework/render';
 import PresenterSortMenu from './presenterSortMenu';
-import MovieModel from "../model/movieModel";
+import MovieModel from '../model/movieModel';
 
 export default class PresenterMenu extends AbstractView {
   #allFilms;
@@ -11,14 +11,16 @@ export default class PresenterMenu extends AbstractView {
   #favoritesNum;
   #menu;
   #filmCount;
-  constructor(filmsArray) {
+  #films;
+  constructor() {
     super();
-    this.#allFilms = filmsArray;
+    this.#films = new MovieModel();
+    this.#allFilms = this.#films.template;
     this.#watchlistNum = [];
     this.#historyNum = [];
     this.#favoritesNum = [];
 
-    filmsArray.forEach((film)=>{
+    this.#allFilms.forEach((film)=>{
       if(film.user_details.watchlist){
         this.#watchlistNum.push(film);
       }
@@ -53,9 +55,6 @@ export default class PresenterMenu extends AbstractView {
   }
 
   get template () {
-    const sortMenu = new PresenterSortMenu(new MovieModel().template);
-    // eslint-disable-next-line no-unused-expressions
-    sortMenu.template;
     this.#menu = new Menu(this.#filmCount);
     render(this.#menu, document.querySelector('.main'), RenderPosition.AFTERBEGIN);
     this.#menu.menuClickHandler((evt)=>{
@@ -66,27 +65,15 @@ export default class PresenterMenu extends AbstractView {
       if (!evt.path[0].classList.contains('main-navigation__item--active')) {
         if (document.querySelector('.main-navigation__item--active')) {
           document.querySelector('.main-navigation__item--active').classList.remove('main-navigation__item--active');
+          document.querySelector('.sort').remove();
         }
         evt.path[0].classList.add('main-navigation__item--active');
+        const sortMenu = new PresenterSortMenu(this.#films);
+        sortMenu.template;
         sortMenu.filmList = this.getFilmArray;
-        // eslint-disable-next-line no-unused-expressions
         sortMenu.filmList;
       }
     }, '.main-navigation__item');
-
-    document.querySelectorAll('.sort__button').forEach((button)=>{
-      button.addEventListener('click', (evt)=>{
-        evt.preventDefault();
-        if(!button.classList.contains('sort__button--active')) {
-          document.querySelector('.sort__button--active').classList.remove('sort__button--active');
-          button.classList.add('sort__button--active');
-          document.querySelector('.films-list__container').innerHTML ='';
-          // eslint-disable-next-line no-unused-expressions
-          sortMenu.filmList;
-        }
-      });
-    });
-
     return '';
   }
 }

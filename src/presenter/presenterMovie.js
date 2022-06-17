@@ -1,4 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
+import MovieModel from '../model/movieModel';
 
 export default class PresenterMovie extends AbstractView{
   //умеет выдавать свою карточку
@@ -28,7 +29,7 @@ export default class PresenterMovie extends AbstractView{
       document.querySelector('.film-details').remove();
       document.body.classList.remove('hide-overflow');
     });
-
+    const movieModel = new MovieModel();
     popup.popupEmotionClickHandler();
 
     popup.popupWatchlistClickHandler((evt)=>{
@@ -42,6 +43,7 @@ export default class PresenterMovie extends AbstractView{
         watchListButton.classList.add('film-details__control-button--active');
         this.#filmData.user_details.watchlist = true;
       }
+      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
     }); //Popup watchlist click handler
 
     popup.popupFavoriteClickHandler((evt)=>{
@@ -55,6 +57,7 @@ export default class PresenterMovie extends AbstractView{
         favoriteButton.classList.add('film-details__control-button--active');
         this.#filmData.user_details.favorite = true;
       }
+      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
     }); //Popup favorite click handler
 
     popup.popupWatchedClickHandler((evt)=>{
@@ -68,6 +71,7 @@ export default class PresenterMovie extends AbstractView{
         watchedButton.classList.add('film-details__control-button--active');
         this.#filmData.user_details.alreadyWatched = true;
       }
+      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
     }); //Popup watched click handler
   };
 
@@ -80,18 +84,22 @@ export default class PresenterMovie extends AbstractView{
       document.body.classList.add('hide-overflow');
       this.#createPopup(filmcard);
     });
+    const movieModel = new MovieModel();
 
     filmcard.filmCardFavoriteClickHandler((evt)=>{
       evt.preventDefault();
-      filmcard.editFavoriteConditions();
       const favoriteButton = filmcard.element.querySelector('.film-card__controls-item--favorite');
       if (favoriteButton.classList.contains('film-card__controls-item--active')) {
         favoriteButton.classList.remove('film-card__controls-item--active');
         this.#filmData.user_details.favorite = false;
+        if (document.querySelector('.main-navigation__item--active').innerHTML.includes('Favorites')) {
+          filmcard.element.remove();
+        }
       } else {
         favoriteButton.classList.add('film-card__controls-item--active');
         this.#filmData.user_details.favorite = true;
       }
+      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
     }); //favorite button click Handler
 
     filmcard.filmCardWatchedClickHandler((evt)=>{
@@ -100,10 +108,14 @@ export default class PresenterMovie extends AbstractView{
       if (watchedButton.classList.contains('film-card__controls-item--active')) {
         watchedButton.classList.remove('film-card__controls-item--active');
         this.#filmData.user_details.alreadyWatched = false;
+        if (document.querySelector('.main-navigation__item--active').innerHTML.includes('History')) {
+          filmcard.element.remove();
+        }
       } else {
         watchedButton.classList.add('film-card__controls-item--active');
         this.#filmData.user_details.alreadyWatched = true;
       }
+      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
     }); //watched button click Handler
 
     filmcard.filmCardWatchlistClickHandler((evt)=>{
@@ -112,9 +124,13 @@ export default class PresenterMovie extends AbstractView{
       if (watchListButton.classList.contains('film-card__controls-item--active')) {
         watchListButton.classList.remove('film-card__controls-item--active');
         this.#filmData.user_details.watchlist = false;
+        if (document.querySelector('.main-navigation__item--active').innerHTML.includes('Watchlist')) {
+          filmcard.element.remove();
+        }
       } else {
         watchListButton.classList.add('film-card__controls-item--active');
         this.#filmData.user_details.watchlist = true;
+        movieModel.updateFilmById(this.#filmData.id, this.#filmData);
       }
     }); //watchList button click Handler
 
