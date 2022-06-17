@@ -29,6 +29,9 @@ export default class PresenterMovie extends AbstractView{
       document.querySelector('.film-details').remove();
       document.body.classList.remove('hide-overflow');
     });
+
+    popup.deleteComment();
+
     const movieModel = new MovieModel();
     popup.popupEmotionClickHandler();
 

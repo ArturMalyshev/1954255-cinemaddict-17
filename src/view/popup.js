@@ -268,6 +268,18 @@ export default class Popup extends AbstractStatefulView{
     return shell.innerHTML;
   }
 
+  deleteComment = () => {
+    this.element.querySelectorAll('.film-details__comment-delete').forEach((button)=>{
+      button.addEventListener('click', (evt)=>{
+        evt.preventDefault();
+        evt.path[3].remove();
+        let value = document.querySelector('.film-details__comments-count').textContent;
+        value -= 1;
+        document.querySelector('.film-details__comments-count').textContent = value;
+      });
+    })
+  }
+
   closeButtonClickHandler = (callback) => {
     this.#closeButtonHandler = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', callback);
