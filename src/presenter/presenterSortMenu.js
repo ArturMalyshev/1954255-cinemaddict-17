@@ -28,7 +28,7 @@ export default class PresenterSortMenu extends AbstractView{
     this.#showMoreButton = new ShowMoreButton();
   }
 
-  get template () {
+  template = () => {
     const sortMenu = new SortMenu();
     render(sortMenu, document.querySelector('.films'), RenderPosition.BEFOREBEGIN);
     sortMenu.sortMenuClickHandler((evt)=>{
@@ -40,11 +40,12 @@ export default class PresenterSortMenu extends AbstractView{
         if (document.querySelector('.films-list__show-more')) {
           document.querySelector('.films-list__show-more').remove();
         }
+        // eslint-disable-next-line no-unused-expressions
         this.filmList;
       }
     });
     return '';
-  }
+  };
 
   renderer = (filmsArray) => {
     const FILMCARD_COUNT_PER_STEP = 5;

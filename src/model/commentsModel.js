@@ -1,4 +1,5 @@
 import {commentsData, getCommentInformation} from '../mock/data';
+// eslint-disable-next-line no-undef
 const he = require('he');
 
 export default class CommentsModel {
@@ -16,7 +17,9 @@ export default class CommentsModel {
 
   createComment = (text, emotion) => {
     const textEncoded = he.encode(text);
+    // eslint-disable-next-line no-console
     console.log(textEncoded);
+    // eslint-disable-next-line no-console
     console.log(emotion);
   };
 

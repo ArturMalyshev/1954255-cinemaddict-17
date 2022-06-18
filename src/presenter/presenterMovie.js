@@ -1,6 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
 import MovieModel from '../model/movieModel';
-import {commentsData} from '../mock/data';
 import CommentsModel from '../model/commentsModel';
 
 export default class PresenterMovie extends AbstractView{

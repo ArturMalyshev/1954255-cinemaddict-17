@@ -69,7 +69,7 @@ export default class PresenterMenu extends AbstractView {
         }
         evt.path[0].classList.add('main-navigation__item--active');
         const sortMenu = new PresenterSortMenu(this.#films);
-        sortMenu.template;
+        sortMenu.template();
         sortMenu.filmList = this.getFilmArray;
         sortMenu.filmList;
       }

@@ -28,7 +28,6 @@ export default class Menu extends AbstractView{
   }
 
   set watchlistNum (intValue) {
-    console.log(intValue);
     document.querySelector('[href="#watchlist"] .main-navigation__item-count').textContent = intValue;
   }
 
@@ -37,7 +36,6 @@ export default class Menu extends AbstractView{
   }
 
   set historyNum (intValue) {
-    console.log(intValue);
     document.querySelector('[href="#history"] .main-navigation__item-count').textContent = intValue;
   }
 
@@ -46,7 +44,6 @@ export default class Menu extends AbstractView{
   }
 
   set favoritesNum (intValue) {
-    console.log(intValue);
     document.querySelector('[href="#favorites"] .main-navigation__item-count').textContent = intValue;
   }
 
