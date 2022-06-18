@@ -41,6 +41,7 @@ export default class Popup extends AbstractStatefulView{
   #popupWatchlistHandler;
   #popupFavoriteHandler;
   #popupWatchedHandler;
+  #addCommentHandler;
   constructor(filmInfoObject, commentsArray) {
     super();
     this._restoreHandlers = () => {
@@ -84,7 +85,7 @@ export default class Popup extends AbstractStatefulView{
         button.addEventListener('click', this.#deleteCommentHandler);
       });
 
-      this.#popupAddComment();
+      this.#addCommentHandler();
 
       this.element.scrollBy(0, this.element.scrollHeight);
     };
@@ -322,38 +323,13 @@ export default class Popup extends AbstractStatefulView{
     this.updateElement(this.#emoji);
   };
 
-  popupAddSaveCommentHandler = () => {
-    this.#popupAddComment();
+  popupAddSaveCommentHandler = (callback) => {
+    this.#addCommentHandler = callback;
+    callback();
   };
 
-  #popupAddComment = () => {
-    const pressed = new Set();
-    document.addEventListener('keyup', (evt)=>{
-      if (evt.key === 'Meta' || evt.key === 'Enter' || evt.key === 'Ctrl') {
-        pressed.clear();
-      }
-    });
-    document.addEventListener('keydown', (evt)=>{
-      pressed.add(evt.key);
-      if ((pressed.has('Meta') && (pressed.has('Enter'))) || (pressed.has('Ctrl') && (pressed.has('Enter')))) {
-        if (document.querySelector('.film-details__add-emoji-label').innerHTML !== ''){
-          if (document.querySelector('.film-details__comment-input').value !== '') {
-            this.updateElement(this.element);
-          }
-        }
-      } else {
-        pressed.clear();
-        if (evt.key === 'Meta') {
-          pressed.add('Meta');
-        } else if (evt.key === 'Enter') {
-          pressed.add('Enter');
-        } else if (evt.key === 'Ctrl') {
-          pressed.add('Enter');
-        }
-        return;
-      }
-      pressed.clear();
-    });
+  updatePopup = (data) => {
+    this.updateElement(data);
   };
 }
 

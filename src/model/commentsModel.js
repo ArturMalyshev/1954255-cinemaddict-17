@@ -1,4 +1,5 @@
-import {commentsData, getCommentInformation} from "../mock/data";
+import {commentsData, getCommentInformation} from '../mock/data';
+const he = require('he');
 
 export default class CommentsModel {
   #commentsArray;
@@ -7,10 +8,17 @@ export default class CommentsModel {
 
     this.#commentsArray = [];
     for (let i = 0; i < MAX_COMMENT_COUNT; i++){
-      this.#commentsArray.push(getCommentInformation(commentsData, i));
+      const comment = getCommentInformation(commentsData, i);
+      comment.comment = he.decode(comment.comment);
+      this.#commentsArray.push(comment);
     }
-
   }
+
+  createComment = (text, emotion) => {
+    const textEncoded = he.encode(text);
+    console.log(textEncoded);
+    console.log(emotion);
+  };
 
   get template() {
     return this.#commentsArray;

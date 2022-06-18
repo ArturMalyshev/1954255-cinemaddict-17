@@ -1,5 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import MovieModel from '../model/movieModel';
+import {commentsData} from '../mock/data';
+import CommentsModel from '../model/commentsModel';
 
 export default class PresenterMovie extends AbstractView{
   //умеет выдавать свою карточку
@@ -35,7 +37,39 @@ export default class PresenterMovie extends AbstractView{
     const movieModel = new MovieModel();
     popup.popupEmotionClickHandler();
 
-    popup.popupAddSaveCommentHandler();
+    popup.popupAddSaveCommentHandler(()=>{
+      const pressed = new Set();
+      document.addEventListener('keyup', (evt)=>{
+        if (evt.key === 'Meta' || evt.key === 'Enter' || evt.key === 'Ctrl') {
+          pressed.clear();
+        }
+      });
+      document.addEventListener('keydown', (evt)=>{
+        pressed.add(evt.key);
+        const emojiField = document.querySelector('.film-details__add-emoji-label');
+        const commentField = document.querySelector('.film-details__comment-input');
+        if ((pressed.has('Meta') && (pressed.has('Enter'))) || (pressed.has('Ctrl') && (pressed.has('Enter')))) {
+          if (emojiField.innerHTML !== ''){
+            if (commentField.value !== '') {
+              const emojiName = emojiField.firstChild.getAttribute('alt').slice(6);
+              new CommentsModel().createComment(commentField.value, emojiName);
+              popup.updatePopup(filmcard);
+            }
+          }
+        } else {
+          pressed.clear();
+          if (evt.key === 'Meta') {
+            pressed.add('Meta');
+          } else if (evt.key === 'Enter') {
+            pressed.add('Enter');
+          } else if (evt.key === 'Ctrl') {
+            pressed.add('Enter');
+          }
+          return;
+        }
+        pressed.clear();
+      });
+    });
 
     popup.popupWatchlistClickHandler((evt)=>{
       evt.preventDefault();
