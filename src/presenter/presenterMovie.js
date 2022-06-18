@@ -35,6 +35,8 @@ export default class PresenterMovie extends AbstractView{
     const movieModel = new MovieModel();
     popup.popupEmotionClickHandler();
 
+    popup.popupAddSaveCommentHandler();
+
     popup.popupWatchlistClickHandler((evt)=>{
       evt.preventDefault();
       const watchListButton = popup.element.querySelector('.film-details__control-button--watchlist');
