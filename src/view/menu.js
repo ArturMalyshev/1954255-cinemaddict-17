@@ -23,6 +23,30 @@ export default class Menu extends AbstractView{
     </nav>`;
   }
 
+  get watchlistNum () {
+    return '';
+  }
+
+  set watchlistNum (intValue) {
+    document.querySelector('[href="#watchlist"] .main-navigation__item-count').textContent = intValue;
+  }
+
+  get historyNum () {
+    return '';
+  }
+
+  set historyNum (intValue) {
+    document.querySelector('[href="#history"] .main-navigation__item-count').textContent = intValue;
+  }
+
+  get favoritesNum () {
+    return '';
+  }
+
+  set favoritesNum (intValue) {
+    document.querySelector('[href="#favorites"] .main-navigation__item-count').textContent = intValue;
+  }
+
   menuClickHandler = (callback, element) => {
     const buttons = document.body.querySelectorAll(element);
     buttons.forEach((button)=>{

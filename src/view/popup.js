@@ -41,6 +41,7 @@ export default class Popup extends AbstractStatefulView{
   #popupWatchlistHandler;
   #popupFavoriteHandler;
   #popupWatchedHandler;
+  #addCommentHandler;
   constructor(filmInfoObject, commentsArray) {
     super();
     this._restoreHandlers = () => {
@@ -79,6 +80,12 @@ export default class Popup extends AbstractStatefulView{
       this.element.querySelectorAll('.film-details__emoji-item').forEach((smile)=>{
         smile.addEventListener('click', this.#EmotionToggleHandler);
       });
+
+      this.element.querySelectorAll('.film-details__comment-delete').forEach((button)=>{
+        button.addEventListener('click', this.#deleteCommentHandler);
+      });
+
+      this.#addCommentHandler();
 
       this.element.scrollBy(0, this.element.scrollHeight);
     };
@@ -268,6 +275,20 @@ export default class Popup extends AbstractStatefulView{
     return shell.innerHTML;
   }
 
+  deleteComment = () => {
+    this.element.querySelectorAll('.film-details__comment-delete').forEach((button)=>{
+      button.addEventListener('click', this.#deleteCommentHandler);
+    });
+  };
+
+  #deleteCommentHandler = (evt) => {
+    evt.preventDefault();
+    evt.path[3].remove();
+    let value = document.querySelector('.film-details__comments-count').textContent;
+    value -= 1;
+    document.querySelector('.film-details__comments-count').textContent = value;
+  };
+
   closeButtonClickHandler = (callback) => {
     this.#closeButtonHandler = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', callback);
@@ -300,6 +321,15 @@ export default class Popup extends AbstractStatefulView{
       emoji: evt.srcElement.getAttribute('id')
     };
     this.updateElement(this.#emoji);
+  };
+
+  popupAddSaveCommentHandler = (callback) => {
+    this.#addCommentHandler = callback;
+    callback();
+  };
+
+  updatePopup = (data) => {
+    this.updateElement(data);
   };
 }
 

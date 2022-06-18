@@ -1,15 +1,11 @@
 import { render } from '../framework/render.js';
-
 import User from '../view/user.js';
-
-import { filmsArrayFromModel, userInfo } from '../model/model.js';
+import UserModel from '../model/userModel';
 import PresenterMenu from './presenterMenu';
 
-const user = new User(userInfo);
-
-const menu = new PresenterMenu(filmsArrayFromModel);
+const user = new User(new UserModel().template);
 // eslint-disable-next-line no-unused-expressions
-menu.template;
+new PresenterMenu().template;
 
 render(user, document.querySelector('.header'));
 
