@@ -71,6 +71,7 @@ export default class PresenterMenu extends AbstractView {
         const sortMenu = new PresenterSortMenu(this.#films);
         sortMenu.template();
         sortMenu.filmList = this.getFilmArray;
+        // eslint-disable-next-line no-unused-expressions
         sortMenu.filmList;
       }
     }, '.main-navigation__item');
