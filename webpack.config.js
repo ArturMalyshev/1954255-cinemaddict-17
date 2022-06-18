@@ -3,7 +3,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   context: path.resolve(__dirname, 'src'),
-  entry: './main.js',
+  entry: ['regenerator-runtime/runtime.js', './main.js'],
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build'),
