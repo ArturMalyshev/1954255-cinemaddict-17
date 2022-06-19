@@ -12,25 +12,41 @@ export default class PresenterMenu extends AbstractView {
   #menu;
   #filmCount;
   #films;
+  #sortMenu;
   constructor() {
     super();
     this.#films = new MovieModel();
-    this.#allFilms = this.#films.template;
+    this.#films.init();
     this.#watchlistNum = [];
     this.#historyNum = [];
     this.#favoritesNum = [];
 
-    this.#allFilms.forEach((film)=>{
-      if(film.user_details.watchlist){
-        this.#watchlistNum.push(film);
-      }
-      if(film.user_details.alreadyWatched) {
-        this.#historyNum.push(film);
-      }
-      if(film.user_details.favorite){
-        this.#favoritesNum.push(film);
-      }
-    });
+    setTimeout(()=>{
+      this.#watchlistNum = [];
+      this.#historyNum = [];
+      this.#favoritesNum = [];
+      this.#allFilms = this.#films.template;
+      this.#allFilms.forEach((film)=>{
+        if(film.user_details.watchlist){
+          this.#watchlistNum.push(film);
+        }
+        if(film.user_details.alreadyWatched) {
+          this.#historyNum.push(film);
+        }
+        if(film.user_details.favorite){
+          this.#favoritesNum.push(film);
+        }
+      });
+      this.#filmCount = {
+        watchlist: this.#watchlistNum.length,
+        history: this.#historyNum.length,
+        favorite: this.#favoritesNum.length
+      };
+      this.#menu = new Menu(this.#filmCount);
+      render(this.#menu, document.querySelector('.main'), RenderPosition.AFTERBEGIN);
+      this.template;
+      this.#sortMenu = new PresenterSortMenu(this.#films);
+    }, 1000);
 
     this.#filmCount = {
       watchlist: this.#watchlistNum.length,
@@ -55,8 +71,7 @@ export default class PresenterMenu extends AbstractView {
   }
 
   get template () {
-    this.#menu = new Menu(this.#filmCount);
-    render(this.#menu, document.querySelector('.main'), RenderPosition.AFTERBEGIN);
+    // eslint-disable-next-line no-unused-expressions
     this.#menu.menuClickHandler((evt)=>{
       evt.preventDefault();
       if (document.querySelector('.films-list__show-more')) {
@@ -68,11 +83,10 @@ export default class PresenterMenu extends AbstractView {
           document.querySelector('.sort').remove();
         }
         evt.path[0].classList.add('main-navigation__item--active');
-        const sortMenu = new PresenterSortMenu(this.#films);
-        sortMenu.template();
-        sortMenu.filmList = this.getFilmArray;
+        this.#sortMenu.template();
+        this.#sortMenu.filmList = this.getFilmArray;
         // eslint-disable-next-line no-unused-expressions
-        sortMenu.filmList;
+        this.#sortMenu.filmList;
       }
     }, '.main-navigation__item');
     return '';

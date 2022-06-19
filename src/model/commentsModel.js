@@ -1,9 +1,11 @@
-import {commentsData, getCommentInformation} from '../mock/data';
+import {commentsData, filmData, getCommentInformation} from '../mock/data';
+import MovieApiService from '../movie-api-service';
 // eslint-disable-next-line no-undef
 const he = require('he');
 
 export default class CommentsModel {
   #commentsArray;
+  #filmApi;
   constructor() {
     const MAX_COMMENT_COUNT = 6;
 
@@ -22,6 +24,8 @@ export default class CommentsModel {
     // eslint-disable-next-line no-console
     console.log(emotion);
   };
+
+  getComment = (filmId) => new MovieApiService('https://17.ecmascript.pages.academy/cinemaddict', 'Basic 11arturka11').getComments(filmId);
 
   get template() {
     return this.#commentsArray;

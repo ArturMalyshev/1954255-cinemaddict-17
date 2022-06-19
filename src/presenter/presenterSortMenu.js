@@ -74,7 +74,7 @@ export default class PresenterSortMenu extends AbstractView{
         document.querySelector('.sort').style.visibility = 'visible';
       }
       for (let i = 0; i < filmsArray.length; i++) {
-        new PresenterMovie(filmsArray[i], new CommentsModel().template, render, RenderPosition, Filmcard, Popup).filmcard();
+        new PresenterMovie(filmsArray[i], new CommentsModel().getComment(filmsArray[i].id), render, RenderPosition, Filmcard, Popup).filmcard();
       }
       setTimeout(()=>{
         if (document.querySelector('.film-card__controls-item')) {
@@ -90,7 +90,7 @@ export default class PresenterSortMenu extends AbstractView{
         document.querySelector('.sort').style.visibility = 'visible';
       }
       for (let i = 0; i < this.#FILMCARD_COUNT_PER_STEP; i++) {
-        new PresenterMovie(filmsArray[i], new CommentsModel().template, render, RenderPosition, Filmcard, Popup).filmcard();
+        new PresenterMovie(filmsArray[i], new CommentsModel().getComment(filmsArray[i].id), render, RenderPosition, Filmcard, Popup).filmcard();
       }
       setTimeout(()=>{
         if (document.querySelector('.film-card__controls-item')) {
@@ -106,7 +106,7 @@ export default class PresenterSortMenu extends AbstractView{
       this.#showMoreButton.setClickHandler(()=>{
         const filmsArray2 = filmsArray.slice(RenderedFilmcards2, RenderedFilmcards + FILMCARD_COUNT_PER_STEP);
         for (let i = 0; i < filmsArray2.length; i++) {
-          new PresenterMovie(filmsArray2[i], new CommentsModel().template, render, RenderPosition, Filmcard, Popup).filmcard();
+          new PresenterMovie(filmsArray2[i], new CommentsModel().getComment(filmsArray[i].id), render, RenderPosition, Filmcard, Popup).filmcard();
         }
         setTimeout(()=>{
           if (document.querySelector('.film-card__controls-item')) {

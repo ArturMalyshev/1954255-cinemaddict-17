@@ -1,15 +1,16 @@
 import {filmData, getFilmInformation} from '../mock/data';
 import MovieApiService from '../movie-api-service';
 import 'regenerator-runtime/runtime';
+import Observable from '../framework/observable';
 
-export default class MovieModel {
+export default class MovieModel extends Observable{
   #films;
   #FILM_COUNT;
   #filmApi;
   constructor() {
+    super();
     this.#filmApi = new MovieApiService('https://17.ecmascript.pages.academy/cinemaddict', 'Basic 11arturka11');
     this.#FILM_COUNT = 8;
-    console.log(this.#filmApi);
     this.#films = [];
   }
 
@@ -21,13 +22,18 @@ export default class MovieModel {
     }
   };
 
-  get template () {
-    this.#filmApi.movies.then((film)=>{
-      console.log(film);
-    });
-    for (let i = 0; i < this.#FILM_COUNT; i++){
-      this.#films.push(getFilmInformation(filmData));
+  init = async () => {
+    try {
+      this.#films = await this.#filmApi.movies;
+      console.log(this.#films);
+    } catch (err) {
+      this.#films = [];
     }
+    this._notify('INIT', '');
+    return 'INIT';
+  };
+
+  get template () {
     return this.#films;
   }
 
