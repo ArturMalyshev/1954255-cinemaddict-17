@@ -6,13 +6,29 @@ const Method = {
 };
 
 export default class MovieApiService extends ApiService {
+  #filmId;
+  constructor() {
+    super('https://17.ecmascript.pages.academy/cinemaddict', 'Basic 11arturka11');
+    this.#filmId = false;
+  }
 
   get movies() {
     return this._load({url: 'movies'})
       .then(ApiService.parseResponse);
   }
 
-  getComments = (filmId) => this._load({url: `comments/${ filmId }`}).then(ApiService.parseResponse);
+  set comments(filmId) {
+    this.#filmId = filmId;
+  }
+
+  get comments() {
+    if (this.#filmId === false) {
+      return [];
+    } else {
+      return this._load({url: `comments/${ this.#filmId }`})
+        .then(ApiService.parseResponse);
+    }
+  }
 
   updateMovie = async (task) => {
     const response = await this._load({

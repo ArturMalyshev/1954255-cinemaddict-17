@@ -1,14 +1,21 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
-export default class Menu extends AbstractView{
+export default class Menu extends AbstractStatefulView{
   #watchlistNum;
   #historyNum;
   #favoritesNum;
+  #menuClickerCallback;
   constructor(menuInfoCount) {
     super();
     this.#watchlistNum = menuInfoCount.watchlist;
     this.#historyNum = menuInfoCount.history;
     this.#favoritesNum = menuInfoCount.favorite;
+    this._restoreHandlers = () => {
+      const buttons = document.body.querySelectorAll('.main-navigation__item');
+      buttons.forEach((button)=>{
+        button.addEventListener('click', this.#menuClickerCallback);
+      });
+    };
   }
 
   get template() {
@@ -47,8 +54,15 @@ export default class Menu extends AbstractView{
     document.querySelector('[href="#favorites"] .main-navigation__item-count').textContent = intValue;
   }
 
-  menuClickHandler = (callback, element) => {
-    const buttons = document.body.querySelectorAll(element);
+  updateMenu = (filmsNum) => {
+    this.favoritesNum = filmsNum.favorite;
+    this.historyNum = filmsNum.history;
+    this.watchlistNum = filmsNum.watchlist;
+  };
+
+  menuClickHandler = (callback) => {
+    const buttons = document.body.querySelectorAll('.main-navigation__item');
+    this.#menuClickerCallback = callback;
     buttons.forEach((button)=>{
       button.addEventListener('click', callback);
     });

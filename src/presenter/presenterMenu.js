@@ -1,77 +1,57 @@
 import Menu from '../view/menu';
-import AbstractView from '../framework/view/abstract-view';
 import { render, RenderPosition} from '../framework/render';
 import PresenterSortMenu from './presenterSortMenu';
 import MovieModel from '../model/movieModel';
+import AbstractView from '../framework/view/abstract-view';
 
 export default class PresenterMenu extends AbstractView {
   #allFilms;
-  #watchlistNum;
-  #historyNum;
-  #favoritesNum;
   #menu;
   #filmCount;
   #films;
-  #sortMenu;
   constructor() {
     super();
     this.#films = new MovieModel();
     this.#films.init();
-    this.#watchlistNum = [];
-    this.#historyNum = [];
-    this.#favoritesNum = [];
+    this.#allFilms = [];
 
-    setTimeout(()=>{
-      this.#watchlistNum = [];
-      this.#historyNum = [];
-      this.#favoritesNum = [];
-      this.#allFilms = this.#films.template;
-      this.#allFilms.forEach((film)=>{
-        if(film.user_details.watchlist){
-          this.#watchlistNum.push(film);
-        }
-        if(film.user_details.alreadyWatched) {
-          this.#historyNum.push(film);
-        }
-        if(film.user_details.favorite){
-          this.#favoritesNum.push(film);
-        }
-      });
-      this.#filmCount = {
-        watchlist: this.#watchlistNum.length,
-        history: this.#historyNum.length,
-        favorite: this.#favoritesNum.length
-      };
-      this.#menu = new Menu(this.#filmCount);
-      render(this.#menu, document.querySelector('.main'), RenderPosition.AFTERBEGIN);
-      this.template;
-      this.#sortMenu = new PresenterSortMenu(this.#films);
-    }, 1000);
+    this.#films.addObserver(this.#handleModelEvent);
 
-    this.#filmCount = {
-      watchlist: this.#watchlistNum.length,
-      history: this.#historyNum.length,
-      favorite: this.#favoritesNum.length
-    };
+    this.#filmCount = this.#films.sortedFilms;
   }
+
+  #handleModelEvent = (actionType, films) => {
+    console.log(actionType, films);
+    this.#menu.updateMenu(films);
+  };
+
+  #handleViewAction = (actionType, update) => {
+    console.log(actionType, update);
+  };
 
   get getFilmArray () {
     const activeButton = document.querySelector('.main-navigation__item--active');
     if (activeButton.textContent.includes('movies')) {
-      return this.#allFilms;
+      return this.#films.template;
     } else if (activeButton.innerHTML.includes('Watchlist')) {
-      return this.#watchlistNum;
+      return this.#films.watchlistFilms;
     } else if (activeButton.innerHTML.includes('History')) {
-      return this.#historyNum;
+      return this.#films.historyFilms;
     } else if (activeButton.innerHTML.includes('Favorite')) {
-      return this.#favoritesNum;
+      return this.#films.favoriteFilms;
     } else {
-      return activeButton.textContent;
+      return '';
     }
   }
 
+  get movies () {
+    this.#allFilms = this.#films.template;
+    return this.#allFilms;
+  }
+
   get template () {
-    // eslint-disable-next-line no-unused-expressions
+    this.#menu = new Menu(this.#filmCount);
+    render(this.#menu, document.querySelector('.main'), RenderPosition.AFTERBEGIN);
     this.#menu.menuClickHandler((evt)=>{
       evt.preventDefault();
       if (document.querySelector('.films-list__show-more')) {
@@ -83,12 +63,13 @@ export default class PresenterMenu extends AbstractView {
           document.querySelector('.sort').remove();
         }
         evt.path[0].classList.add('main-navigation__item--active');
-        this.#sortMenu.template();
-        this.#sortMenu.filmList = this.getFilmArray;
+        const sortMenu = new PresenterSortMenu(this.#films);
+        sortMenu.template();
+        sortMenu.filmList = this.getFilmArray;
         // eslint-disable-next-line no-unused-expressions
-        this.#sortMenu.filmList;
+        sortMenu.filmList;
       }
-    }, '.main-navigation__item');
+    });
     return '';
   }
 }

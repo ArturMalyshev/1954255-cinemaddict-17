@@ -10,17 +10,31 @@ export default class PresenterMovie extends AbstractView{
   #renderFunction;
   #filmcardView;
   #popupView;
+  #comments;
   #commentsArray;
 
-  constructor(oneFilmData, comments, renderFunction, renderPosition, filmcardView, popupView) {
+  constructor(oneFilmData, renderFunction, renderPosition, filmcardView, popupView) {
     super();
     this.#filmData = oneFilmData;
     this.#renderFunction = renderFunction;
     this.#filmcardView = filmcardView;
     this.#popupView = popupView;
-    this.#commentsArray = comments;
+    this.#comments = new CommentsModel(oneFilmData.id);
+    this.#comments.init();
+    this.#comments.addObserver(this.#handleModelEvent);
+    this.#commentsArray = [];
     this.#renderPosition = renderPosition;
   }
+
+  #handleModelEvent = (actionType, comments) => {
+    if (actionType === 'comments') {
+      this.#commentsArray = comments;
+    }
+  };
+
+  #handleViewAction = (actionType, update) => {
+    console.log(actionType, update);
+  };
 
   #createPopup = (filmcard) => {
     const popup = new this.#popupView(this.#filmData, this.#commentsArray);

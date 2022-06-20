@@ -253,24 +253,21 @@ export default class Popup extends AbstractStatefulView{
       genreElement.textContent = this.#genre[i];
       helperList[helperList.length - 1].appendChild(genreElement);
     }
-
     this.#commentsArray.forEach((comment)=>{
-      if(comment.id in this.#comments){
-        const data = document.createElement('li');
-        data.classList.add('film-details__comment');
-        data.innerHTML = `<span class="film-details__comment-emoji">
-                          <img src="./images/emoji/${ comment.emotion }.png" width="55" height="55" alt="emoji-smile">
-                        </span>
-                        <div>
-                          <p class="film-details__comment-text">${ comment.comment }</p>
-                          <p class="film-details__comment-info">
-                            <span class="film-details__comment-author">${ comment.author }</span>
-                            <span class="film-details__comment-day">${ dayjs(comment.date).fromNow() }</span>
-                            <button class="film-details__comment-delete">Delete</button>
-                          </p>
-                        </div>`;
-        shell.querySelector('.film-details__comments-list').appendChild(data);
-      }
+      const data = document.createElement('li');
+      data.classList.add('film-details__comment');
+      data.innerHTML = `<span class="film-details__comment-emoji">
+                        <img src="./images/emoji/${ comment.emotion }.png" width="55" height="55" alt="emoji-smile">
+                      </span>
+                      <div>
+                        <p class="film-details__comment-text">${ comment.comment }</p>
+                        <p class="film-details__comment-info">
+                          <span class="film-details__comment-author">${ comment.author }</span>
+                          <span class="film-details__comment-day">${ dayjs(comment.date).fromNow() }</span>
+                          <button class="film-details__comment-delete">Delete</button>
+                        </p>
+                      </div>`;
+      shell.querySelector('.film-details__comments-list').appendChild(data);
     });
     return shell.innerHTML;
   }
@@ -320,7 +317,7 @@ export default class Popup extends AbstractStatefulView{
     this.#emoji = {
       emoji: evt.srcElement.getAttribute('id')
     };
-    this.updateElement(this.#emoji);
+    this.updatePopup(this.#emoji);
   };
 
   popupAddSaveCommentHandler = (callback) => {

@@ -9,7 +9,6 @@ import EmptyList from '../view/empty-list';
 import CommentsModel from '../model/commentsModel';
 import SortMenuModel from '../model/sortMenuModel';
 import MovieModel from '../model/movieModel';
-import Menu from '../view/menu';
 
 
 export default class PresenterSortMenu extends AbstractView{
@@ -49,8 +48,7 @@ export default class PresenterSortMenu extends AbstractView{
 
   renderer = (filmsArray) => {
     const FILMCARD_COUNT_PER_STEP = 5;
-    const RenderedFilmcards = 5;
-    let RenderedFilmcards2 = 5;
+    let RenderedFilmcards = 5;
     if (filmsArray.length === 0) {
       const newEmptyList = new EmptyList();
       const selectedMenuItem = document.querySelector('.main-navigation__item--active').getAttribute('href');
@@ -74,7 +72,7 @@ export default class PresenterSortMenu extends AbstractView{
         document.querySelector('.sort').style.visibility = 'visible';
       }
       for (let i = 0; i < filmsArray.length; i++) {
-        new PresenterMovie(filmsArray[i], new CommentsModel().getComment(filmsArray[i].id), render, RenderPosition, Filmcard, Popup).filmcard();
+        new PresenterMovie(filmsArray[i], render, RenderPosition, Filmcard, Popup).filmcard();
       }
       setTimeout(()=>{
         if (document.querySelector('.film-card__controls-item')) {
@@ -90,7 +88,7 @@ export default class PresenterSortMenu extends AbstractView{
         document.querySelector('.sort').style.visibility = 'visible';
       }
       for (let i = 0; i < this.#FILMCARD_COUNT_PER_STEP; i++) {
-        new PresenterMovie(filmsArray[i], new CommentsModel().getComment(filmsArray[i].id), render, RenderPosition, Filmcard, Popup).filmcard();
+        new PresenterMovie(filmsArray[i], render, RenderPosition, Filmcard, Popup).filmcard();
       }
       setTimeout(()=>{
         if (document.querySelector('.film-card__controls-item')) {
@@ -104,9 +102,9 @@ export default class PresenterSortMenu extends AbstractView{
       render(this.#showMoreButton, document.querySelector('.films-list'), RenderPosition.BEFOREEND);
       this.#showMoreButton.removeClickHandler();
       this.#showMoreButton.setClickHandler(()=>{
-        const filmsArray2 = filmsArray.slice(RenderedFilmcards2, RenderedFilmcards + FILMCARD_COUNT_PER_STEP);
+        const filmsArray2 = filmsArray.slice(RenderedFilmcards, RenderedFilmcards + FILMCARD_COUNT_PER_STEP);
         for (let i = 0; i < filmsArray2.length; i++) {
-          new PresenterMovie(filmsArray2[i], new CommentsModel().getComment(filmsArray[i].id), render, RenderPosition, Filmcard, Popup).filmcard();
+          new PresenterMovie(filmsArray2[i], render, RenderPosition, Filmcard, Popup).filmcard();
         }
         setTimeout(()=>{
           if (document.querySelector('.film-card__controls-item')) {
@@ -117,8 +115,8 @@ export default class PresenterSortMenu extends AbstractView{
             });
           }
         }, 500);
-        RenderedFilmcards2 += FILMCARD_COUNT_PER_STEP;
-        if (RenderedFilmcards2 >= filmsArray.length) {
+        RenderedFilmcards += FILMCARD_COUNT_PER_STEP;
+        if (RenderedFilmcards >= filmsArray.length) {
           remove(this.#showMoreButton);
         }
       });
@@ -126,7 +124,7 @@ export default class PresenterSortMenu extends AbstractView{
   };
 
   #recalculateMenu = () => {
-    const films = new MovieModel().template2;
+    const films = new MovieModel().template;
     this.#newWatchlistNum = [];
     this.#newHistoryNum = [];
     this.#newFavoritesNum = [];
@@ -142,22 +140,6 @@ export default class PresenterSortMenu extends AbstractView{
         this.#newFavoritesNum.push(film);
       }
     });
-
-    const filmCount = {
-      watchlist: 12,
-      history: 32,
-      favorite: 43
-    };
-
-    if (document.querySelector('[href="#watchlist"] .main-navigation__item-count').textContent !== this.#newWatchlistNum.length) {
-      new Menu(filmCount).watchlistNum = this.#newWatchlistNum.length;
-    }
-    if (document.querySelector('[href="#history"] .main-navigation__item-count').textContent !== this.#newHistoryNum.length) {
-      new Menu(filmCount).historyNum = this.#newHistoryNum.length;
-    }
-    if (document.querySelector('[href="#favorites"] .main-navigation__item-count').textContent !== this.#newFavoritesNum.length) {
-      new Menu(filmCount).favoritesNum = this.#newFavoritesNum.length;
-    }
   };
 
   set filmList (value) {

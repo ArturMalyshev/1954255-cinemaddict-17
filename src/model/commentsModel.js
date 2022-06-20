@@ -1,21 +1,27 @@
-import {commentsData, filmData, getCommentInformation} from '../mock/data';
 import MovieApiService from '../movie-api-service';
+import Observable from '../framework/observable';
 // eslint-disable-next-line no-undef
 const he = require('he');
 
-export default class CommentsModel {
+export default class CommentsModel extends Observable{
   #commentsArray;
-  #filmApi;
-  constructor() {
-    const MAX_COMMENT_COUNT = 6;
-
+  #commentApi;
+  constructor(filmId) {
+    super();
+    this.#commentApi = new MovieApiService();
+    this.#commentApi.comments = filmId;
     this.#commentsArray = [];
-    for (let i = 0; i < MAX_COMMENT_COUNT; i++){
-      const comment = getCommentInformation(commentsData, i);
-      comment.comment = he.decode(comment.comment);
-      this.#commentsArray.push(comment);
-    }
   }
+
+  init = async () => {
+    try {
+      this.#commentsArray = await this.#commentApi.comments;
+    } catch(err) {
+      this.#commentApi = [];
+    }
+
+    this._notify('comments', this.#commentsArray);
+  };
 
   createComment = (text, emotion) => {
     const textEncoded = he.encode(text);
@@ -24,8 +30,6 @@ export default class CommentsModel {
     // eslint-disable-next-line no-console
     console.log(emotion);
   };
-
-  getComment = (filmId) => new MovieApiService('https://17.ecmascript.pages.academy/cinemaddict', 'Basic 11arturka11').getComments(filmId);
 
   get template() {
     return this.#commentsArray;

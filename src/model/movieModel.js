@@ -1,18 +1,43 @@
-import {filmData, getFilmInformation} from '../mock/data';
 import MovieApiService from '../movie-api-service';
 import 'regenerator-runtime/runtime';
 import Observable from '../framework/observable';
 
-export default class MovieModel extends Observable{
+export default class MovieModel extends Observable {
   #films;
-  #FILM_COUNT;
   #filmApi;
+  #watchlistNum;
+  #historyNum;
+  #favoritesNum;
   constructor() {
     super();
-    this.#filmApi = new MovieApiService('https://17.ecmascript.pages.academy/cinemaddict', 'Basic 11arturka11');
-    this.#FILM_COUNT = 8;
+    this.#filmApi = new MovieApiService();
     this.#films = [];
+    this.#watchlistNum = [];
+    this.#historyNum = [];
+    this.#favoritesNum = [];
   }
+
+  init = async () => {
+    try {
+      this.#films = await this.#filmApi.movies;
+      this.#films.forEach((film)=>{
+        if(film.user_details.watchlist){
+          this.#watchlistNum.push(film);
+        }
+        if(film.user_details.alreadyWatched) {
+          this.#historyNum.push(film);
+        }
+        if(film.user_details.favorite){
+          this.#favoritesNum.push(film);
+        }
+      });
+    } catch(err) {
+      this.#films = [];
+    }
+
+    this._notify('init', this.sortedFilms);
+    document.querySelector('[href="#all"]').click();
+  };
 
   updateFilmById = (filmId, thisFilm) => {
     for (let i = 0; i < this.#films.length; i++) {
@@ -22,26 +47,27 @@ export default class MovieModel extends Observable{
     }
   };
 
-  init = async () => {
-    try {
-      this.#films = await this.#filmApi.movies;
-      console.log(this.#films);
-    } catch (err) {
-      this.#films = [];
-    }
-    this._notify('INIT', '');
-    return 'INIT';
-  };
-
   get template () {
     return this.#films;
   }
 
-  get template2 () {
-    const data = [];
-    for (let i = 0; i < this.#FILM_COUNT; i++){
-      data.push(getFilmInformation(filmData));
-    }
-    return data;
+  get sortedFilms () {
+    return {
+      watchlist: this.#watchlistNum.length,
+      history: this.#historyNum.length,
+      favorite: this.#favoritesNum.length
+    };
+  }
+
+  get watchlistFilms () {
+    return this.#watchlistNum;
+  }
+
+  get historyFilms () {
+    return this.#historyNum;
+  }
+
+  get favoriteFilms () {
+    return this.#favoritesNum;
   }
 }
