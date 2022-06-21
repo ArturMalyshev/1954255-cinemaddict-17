@@ -1,5 +1,5 @@
-import MovieApiService from '../movie-api-service';
 import Observable from '../framework/observable';
+import {movieApiService} from '../presenter/presenter';
 // eslint-disable-next-line no-undef
 const he = require('he');
 
@@ -8,7 +8,7 @@ export default class CommentsModel extends Observable{
   #commentApi;
   constructor(filmId) {
     super();
-    this.#commentApi = new MovieApiService();
+    this.#commentApi = movieApiService;
     this.#commentApi.comments = filmId;
     this.#commentsArray = [];
   }

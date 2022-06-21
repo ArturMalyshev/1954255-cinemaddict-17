@@ -2,12 +2,14 @@ import { render } from '../framework/render.js';
 import User from '../view/user.js';
 import UserModel from '../model/userModel';
 import PresenterMenu from './presenterMenu';
-import MovieModel from '../model/movieModel';
+import MovieApiService from '../movie-api-service';
 
 
 const user = new User(new UserModel().template);
 // eslint-disable-next-line no-unused-expressions
-const movie = new MovieModel();
+const movieApiService = new MovieApiService();
+// eslint-disable-next-line no-unused-expressions
+movieApiService.init;
 new PresenterMenu().template;
 
 render(user, document.querySelector('.header'));
@@ -21,3 +23,4 @@ document.addEventListener('keyup', (e) => {
   }
 });
 
+export { movieApiService };

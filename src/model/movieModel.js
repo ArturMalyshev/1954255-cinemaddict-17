@@ -1,6 +1,6 @@
-import MovieApiService from '../movie-api-service';
 import 'regenerator-runtime/runtime';
 import Observable from '../framework/observable';
+import {movieApiService} from '../presenter/presenter';
 
 export default class MovieModel extends Observable {
   #films;
@@ -11,15 +11,18 @@ export default class MovieModel extends Observable {
   #oneFilmFromServer;
   constructor() {
     super();
-    this.#filmApi = new MovieApiService();
+    this.#filmApi = movieApiService;
     this.#films = [];
     this.#watchlistNum = [];
     this.#historyNum = [];
     this.#favoritesNum = [];
   }
 
-  init = async () => {
+  init = async (clickAllMovies) => {
     try {
+      this.#watchlistNum = [];
+      this.#historyNum = [];
+      this.#favoritesNum = [];
       this.#films = await this.#filmApi.movies;
       this.#films.forEach((film)=>{
         if(film.user_details.watchlist){
@@ -37,7 +40,9 @@ export default class MovieModel extends Observable {
     }
 
     this._notify('init', this.sortedFilms);
-    document.querySelector('[href="#all"]').click();
+    if (clickAllMovies) {
+      document.querySelector('[href="#all"]').click();
+    }
   };
 
   updateFilmById = async (thisFilm) => {

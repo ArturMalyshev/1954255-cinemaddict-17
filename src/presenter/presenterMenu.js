@@ -12,7 +12,7 @@ export default class PresenterMenu extends AbstractView {
   constructor() {
     super();
     this.#films = new MovieModel();
-    this.#films.init();
+    this.#films.init(true);
     this.#allFilms = [];
 
     this.#films.addObserver(this.#handleModelEvent);
@@ -21,11 +21,11 @@ export default class PresenterMenu extends AbstractView {
   }
 
   #handleModelEvent = (actionType, films) => {
-    switch (actionType) {
-      case 'init':
-        console.log(actionType, films);
-        this.#menu.updateMenu(films);
-        break;
+    if (actionType === 'init') {
+      console.log(actionType, films);
+      this.#menu.updateMenu(films);
+    } else {
+      console.log('newwwww', actionType, films);
     }
   };
 
