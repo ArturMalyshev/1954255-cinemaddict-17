@@ -10,6 +10,7 @@ const user = new User(new UserModel().template);
 const movieApiService = new MovieApiService();
 // eslint-disable-next-line no-unused-expressions
 movieApiService.init;
+// eslint-disable-next-line no-unused-expressions
 new PresenterMenu().template;
 
 render(user, document.querySelector('.header'));

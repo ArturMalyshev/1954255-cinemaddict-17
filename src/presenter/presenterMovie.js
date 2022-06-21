@@ -32,10 +32,7 @@ export default class PresenterMovie extends AbstractView{
     if (actionType === 'comments') {
       this.#commentsArray = data;
     } else if (actionType === 'updateFilm') {
-      console.log('updateFilm', data);
-      this.#filmcard.updateFilmcard(data);
-    } else {
-      console.log('new', actionType, data);
+      this.#filmcard.updateFilmcard(this.#movieModel.adaptFromServer(data));
     }
   };
 
@@ -92,10 +89,10 @@ export default class PresenterMovie extends AbstractView{
       this.#filmCardWatchlistClickHandlerCallback();
       if (watchListButton.classList.contains('film-details__control-button--active')) {
         watchListButton.classList.remove('film-details__control-button--active');
-        this.#filmData.user_details.watchlist = false;
+        this.#filmData.userDetails.watchlist = false;
       } else {
         watchListButton.classList.add('film-details__control-button--active');
-        this.#filmData.user_details.watchlist = true;
+        this.#filmData.userDetails.watchlist = true;
       }
       this.#movieModel.updateFilmById(this.#filmData);
     }); //Popup watchlist click handler
@@ -106,10 +103,10 @@ export default class PresenterMovie extends AbstractView{
       this.#filmCardFavoriteClickHandlerCallback();
       if (favoriteButton.classList.contains('film-details__control-button--active')) {
         favoriteButton.classList.remove('film-details__control-button--active');
-        this.#filmData.user_details.favorite = false;
+        this.#filmData.userDetails.favorite = false;
       } else {
         favoriteButton.classList.add('film-details__control-button--active');
-        this.#filmData.user_details.favorite = true;
+        this.#filmData.userDetails.favorite = true;
       }
       this.#movieModel.updateFilmById(this.#filmData);
     }); //Popup favorite click handler
@@ -120,10 +117,10 @@ export default class PresenterMovie extends AbstractView{
       this.#filmCardWatchedClickHandlerCallback();
       if (watchedButton.classList.contains('film-details__control-button--active')) {
         watchedButton.classList.remove('film-details__control-button--active');
-        this.#filmData.user_details.already_watched = false;
+        this.#filmData.userDetails.alreadyWatched = false;
       } else {
         watchedButton.classList.add('film-details__control-button--active');
-        this.#filmData.user_details.already_watched = true;
+        this.#filmData.userDetails.alreadyWatched = true;
       }
       this.#movieModel.updateFilmById(this.#filmData);
     }); //Popup watched click handler
@@ -158,28 +155,28 @@ export default class PresenterMovie extends AbstractView{
   };
 
   #filmCardFavoriteClickHandlerCallback = () => {
-    if (this.#filmData.user_details.favorite === true) {
-      this.#filmData.user_details.favorite = false;
+    if (this.#filmData.userDetails.favorite === true) {
+      this.#filmData.userDetails.favorite = false;
     } else {
-      this.#filmData.user_details.favorite = true;
+      this.#filmData.userDetails.favorite = true;
     }
     this.#movieModel.updateFilmById(this.#filmData);
   };
 
   #filmCardWatchedClickHandlerCallback = () => {
-    if (this.#filmData.user_details.already_watched === true) {
-      this.#filmData.user_details.already_watched = false;
+    if (this.#filmData.userDetails.alreadyWatched === true) {
+      this.#filmData.userDetails.alreadyWatched = false;
     } else {
-      this.#filmData.user_details.already_watched = true;
+      this.#filmData.userDetails.alreadyWatched = true;
     }
     this.#movieModel.updateFilmById(this.#filmData);
   };
 
   #filmCardWatchlistClickHandlerCallback = () => {
-    if (this.#filmData.user_details.watchlist === true) {
-      this.#filmData.user_details.watchlist = false;
+    if (this.#filmData.userDetails.watchlist === true) {
+      this.#filmData.userDetails.watchlist = false;
     } else {
-      this.#filmData.user_details.watchlist = true;
+      this.#filmData.userDetails.watchlist = true;
     }
     this.#movieModel.updateFilmById(this.#filmData);
   };

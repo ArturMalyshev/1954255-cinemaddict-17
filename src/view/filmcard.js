@@ -33,22 +33,22 @@ export default class Filmcard extends AbstractStatefulView{
   constructor(filmInfoObject) {
     super();
     this.#filmId = filmInfoObject.id;
-    this.#name = filmInfoObject.film_info.title;
-    this.#img = filmInfoObject.film_info.poster;
-    this.#rating = filmInfoObject.film_info.total_rating;
-    this.#year = new Date (filmInfoObject.film_info.release.date);
-    this.#duration = getTimeFromMins(filmInfoObject.film_info.runtime);
-    this.#genre = filmInfoObject.film_info.genre;
-    this.#description = filmInfoObject.film_info.description;
+    this.#name = filmInfoObject.filmInfo.title;
+    this.#img = filmInfoObject.filmInfo.poster;
+    this.#rating = filmInfoObject.filmInfo.totalRating;
+    this.#year = new Date (filmInfoObject.filmInfo.release.date);
+    this.#duration = getTimeFromMins(filmInfoObject.filmInfo.runtime);
+    this.#genre = filmInfoObject.filmInfo.genre;
+    this.#description = filmInfoObject.filmInfo.description;
     this.#commentCount = filmInfoObject.comments.length;
     this.#state = {
       watched: false,
       favorite:  false,
       watchlist: false
     };
-    this.#state.watched = filmInfoObject.user_details.already_watched;
-    this.#state.favorite = filmInfoObject.user_details.favorite;
-    this.#state.watchlist = filmInfoObject.user_details.watchlist;
+    this.#state.watched = filmInfoObject.userDetails.alreadyWatched;
+    this.#state.favorite = filmInfoObject.userDetails.favorite;
+    this.#state.watchlist = filmInfoObject.userDetails.watchlist;
 
     if (this.#state.watched) {
       this.#watchedClass = 'film-card__controls-item--active';
@@ -122,11 +122,10 @@ export default class Filmcard extends AbstractStatefulView{
 
   updateFilmcard = (filmData) => {
     this.#state = {
-      watched: filmData.user_details.already_watched,
-      favorite:  filmData.user_details.favorite,
-      watchlist: filmData.user_details.watchlist,
+      watched: filmData.userDetails.alreadyWatched,
+      favorite:  filmData.userDetails.favorite,
+      watchlist: filmData.userDetails.watchlist,
     };
-    console.log(this.#state);
     this.updateElement(this.#state);
   };
 

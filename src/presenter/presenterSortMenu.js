@@ -6,7 +6,6 @@ import Filmcard from '../view/filmcard.js';
 import Popup from '../view/popup.js';
 import ShowMoreButton from '../view/show-more-button';
 import EmptyList from '../view/empty-list';
-import CommentsModel from '../model/commentsModel';
 import SortMenuModel from '../model/sortMenuModel';
 import MovieModel from '../model/movieModel';
 
@@ -130,13 +129,14 @@ export default class PresenterSortMenu extends AbstractView{
     this.#newFavoritesNum = [];
 
     films.forEach((film)=>{
-      if(film.user_details.watchlist){
+      film = films.adaptFromServer(film);
+      if(film.userDetails.watchlist){
         this.#newWatchlistNum.push(film);
       }
-      if(film.user_details.alreadyWatched) {
+      if(film.userDetails.alreadyWatched) {
         this.#newHistoryNum.push(film);
       }
-      if(film.user_details.favorite){
+      if(film.userDetails.favorite){
         this.#newFavoritesNum.push(film);
       }
     });

@@ -18,20 +18,56 @@ export default class MovieModel extends Observable {
     this.#favoritesNum = [];
   }
 
+  adaptFromServer = (data) => {
+    const adapted = {
+      ...data,
+      'userDetails' : {
+        'alreadyWatched' : data['user_details']['already_watched'],
+        'watchingDate' : data['user_details']['watching_date'],
+        'watchlist': data['user_details']['watchlist'],
+        'favorite' : data['user_details']['favorite'],
+      },
+      'filmInfo' : {
+        'title' : data['film_info']['title'],
+        'alternativeTitle' : data['film_info']['alternative_title'],
+        'totalRating': data['film_info']['total_rating'],
+        'poster' : data['film_info']['poster'],
+        'ageRating' : data['film_info']['age_rating'],
+        'description' : data['film_info']['description'],
+        'director' : data['film_info']['director'],
+        'genre' : data['film_info']['genre'],
+        'release' : {
+          'date' : data['film_info']['release']['date'],
+          'releaseCountry' : data['film_info']['release']['release_country'],
+        },
+        'runtime' : data['film_info']['runtime'],
+        'writers' : data['film_info']['writers'],
+        'actors' : data['film_info']['actors'],
+      }
+    };
+
+    delete adapted['user_details'];
+    delete adapted['film_info'];
+    return adapted;
+  };
+
   init = async (clickAllMovies) => {
     try {
       this.#watchlistNum = [];
       this.#historyNum = [];
       this.#favoritesNum = [];
       this.#films = await this.#filmApi.movies;
+      for (let i = 0; i < this.#films.length; i++) {
+        this.#films[i] = this.adaptFromServer(this.#films[i]);
+      }
       this.#films.forEach((film)=>{
-        if(film.user_details.watchlist){
+        if(film.userDetails.watchlist){
           this.#watchlistNum.push(film);
         }
-        if(film.user_details.alreadyWatched) {
+        if(film.userDetails.alreadyWatched) {
           this.#historyNum.push(film);
         }
-        if(film.user_details.favorite){
+        if(film.userDetails.favorite){
           this.#favoritesNum.push(film);
         }
       });
