@@ -21,8 +21,12 @@ export default class PresenterMenu extends AbstractView {
   }
 
   #handleModelEvent = (actionType, films) => {
-    console.log(actionType, films);
-    this.#menu.updateMenu(films);
+    switch (actionType) {
+      case 'init':
+        console.log(actionType, films);
+        this.#menu.updateMenu(films);
+        break;
+    }
   };
 
   #handleViewAction = (actionType, update) => {

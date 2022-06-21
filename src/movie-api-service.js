@@ -8,7 +8,7 @@ const Method = {
 export default class MovieApiService extends ApiService {
   #filmId;
   constructor() {
-    super('https://17.ecmascript.pages.academy/cinemaddict', 'Basic 11arturka11');
+    super('https://17.ecmascript.pages.academy/cinemaddict', 'Basic arturka');
     this.#filmId = false;
   }
 
@@ -30,16 +30,13 @@ export default class MovieApiService extends ApiService {
     }
   }
 
-  updateMovie = async (task) => {
+  updateMovie = async (movie) => {
     const response = await this._load({
-      url: `tasks/${task.id}`,
+      url: `movies/${ movie.id }`,
       method: Method.PUT,
-      body: JSON.stringify(task),
+      body: JSON.stringify(movie),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
-
-    const parsedResponse = await ApiService.parseResponse(response);
-
-    return parsedResponse;
+    return ApiService.parseResponse(response);
   };
 }

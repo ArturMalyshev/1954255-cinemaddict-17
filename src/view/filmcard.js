@@ -1,5 +1,5 @@
-import AbstractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
 function getTimeFromMins(mins) {
   if (mins > 59) {
@@ -9,7 +9,7 @@ function getTimeFromMins(mins) {
   }
 }
 
-export default class Filmcard extends AbstractView{
+export default class Filmcard extends AbstractStatefulView{
   #name;
   #img;
   #rating;
@@ -25,6 +25,11 @@ export default class Filmcard extends AbstractView{
   #watchedClass;
   #favoriteClass;
   #filmId;
+  #state;
+  #filmCardClickHandlerCallback;
+  #filmCardWatchlistClickHandlerCallback;
+  #filmCardFavoriteClickHandlerCallback;
+  #filmCardWatchedClickHandlerCallback;
   constructor(filmInfoObject) {
     super();
     this.#filmId = filmInfoObject.id;
@@ -36,27 +41,54 @@ export default class Filmcard extends AbstractView{
     this.#genre = filmInfoObject.film_info.genre;
     this.#description = filmInfoObject.film_info.description;
     this.#commentCount = filmInfoObject.comments.length;
-    this.#watched = filmInfoObject.user_details.alreadyWatched;
-    this.#favorite = filmInfoObject.user_details.favorite;
-    this.#watchlist = filmInfoObject.user_details.watchlist;
+    this.#state = {
+      watched: false,
+      favorite:  false,
+      watchlist: false
+    };
+    this.#state.watched = filmInfoObject.user_details.already_watched;
+    this.#state.favorite = filmInfoObject.user_details.favorite;
+    this.#state.watchlist = filmInfoObject.user_details.watchlist;
 
-    if (this.#watched) {
+    if (this.#state.watched) {
       this.#watchedClass = 'film-card__controls-item--active';
     } else {
       this.#watchedClass = '';
     }
 
-    if (this.#watchlist) {
+    if (this.#state.watchlist) {
       this.#watchlistClass = 'film-card__controls-item--active';
     } else {
       this.#watchlistClass = '';
     }
 
-    if (this.#favorite) {
+    if (this.#state.favorite) {
       this.#favoriteClass = 'film-card__controls-item--active';
     } else {
       this.#favoriteClass = '';
     }
+
+    this._restoreHandlers = () => {
+      if (this.#state.favorite) {
+        this.element.querySelector('.film-card__controls-item--favorite').classList.add('film-card__controls-item--active');
+      } else {
+        this.element.querySelector('.film-card__controls-item--favorite').classList.remove('film-card__controls-item--active');
+      }
+      if (this.#state.watchlist) {
+        this.element.querySelector('.film-card__controls-item--add-to-watchlist').classList.add('film-card__controls-item--active');
+      } else {
+        this.element.querySelector('.film-card__controls-item--add-to-watchlist').classList.remove('film-card__controls-item--active');
+      }
+      if (this.#state.watched) {
+        this.element.querySelector('.film-card__controls-item--mark-as-watched').classList.add('film-card__controls-item--active');
+      } else {
+        this.element.querySelector('.film-card__controls-item--mark-as-watched').classList.remove('film-card__controls-item--active');
+      }
+      this.element.querySelector('.film-card__link').addEventListener('click', this.#filmCardClickHandlerCallback);
+      this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', this.#filmCardWatchlistClickHandlerCallback);
+      this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', this.#filmCardFavoriteClickHandlerCallback);
+      this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this.#filmCardWatchedClickHandlerCallback);
+    };
   }
 
   get template() {
@@ -88,47 +120,34 @@ export default class Filmcard extends AbstractView{
     `;
   }
 
+  updateFilmcard = (filmData) => {
+    this.#state = {
+      watched: filmData.user_details.already_watched,
+      favorite:  filmData.user_details.favorite,
+      watchlist: filmData.user_details.watchlist,
+    };
+    console.log(this.#state);
+    this.updateElement(this.#state);
+  };
+
   filmCardClickHandler = (callback) => {
-    this.element.querySelector('.film-card__link').addEventListener('click', callback);
+    this.#filmCardClickHandlerCallback = callback;
+    this.element.querySelector('.film-card__link').addEventListener('click', this.#filmCardClickHandlerCallback);
   };
 
   filmCardWatchlistClickHandler = (callback) => {
-    this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', callback);
+    this.#filmCardWatchlistClickHandlerCallback = callback;
+    this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', this.#filmCardWatchlistClickHandlerCallback);
   };
 
   filmCardFavoriteClickHandler = (callback) => {
-    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', callback);
+    this.#filmCardFavoriteClickHandlerCallback = callback;
+    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', this.#filmCardFavoriteClickHandlerCallback);
   };
 
   filmCardWatchedClickHandler = (callback) => {
-    this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', callback);
-  };
-
-  filmCardWatchListButtonHandler = () => {
-    const button = this.element.querySelector('.film-card__controls-item--add-to-watchlist');
-    if (button.classList.contains('film-card__controls-item--active')) {
-      button.classList.remove('film-card__controls-item--active');
-    } else {
-      button.classList.add('film-card__controls-item--active');
-    }
-  };
-
-  filmCardFavoriteButtonHandler = () => {
-    const button = this.element.querySelector('.film-card__controls-item--favorite');
-    if (button.classList.contains('film-card__controls-item--active')) {
-      button.classList.remove('film-card__controls-item--active');
-    } else {
-      button.classList.add('film-card__controls-item--active');
-    }
-  };
-
-  filmCardWatchedButtonHandler = () => {
-    const button = this.element.querySelector('.film-card__controls-item--mark-as-watched');
-    if (button.classList.contains('film-card__controls-item--active')) {
-      button.classList.remove('film-card__controls-item--active');
-    } else {
-      button.classList.add('film-card__controls-item--active');
-    }
+    this.#filmCardWatchedClickHandlerCallback = callback;
+    this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this.#filmCardWatchedClickHandlerCallback);
   };
 
 }

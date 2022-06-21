@@ -1,10 +1,8 @@
-import AbstractView from '../framework/view/abstract-view';
 import MovieModel from '../model/movieModel';
 import CommentsModel from '../model/commentsModel';
+import AbstractView from '../framework/view/abstract-view';
 
 export default class PresenterMovie extends AbstractView{
-  //умеет выдавать свою карточку
-  //умеет по клику выдавть попап
   #renderPosition;
   #filmData;
   #renderFunction;
@@ -12,6 +10,8 @@ export default class PresenterMovie extends AbstractView{
   #popupView;
   #comments;
   #commentsArray;
+  #movieModel;
+  #filmcard;
 
   constructor(oneFilmData, renderFunction, renderPosition, filmcardView, popupView) {
     super();
@@ -20,15 +20,22 @@ export default class PresenterMovie extends AbstractView{
     this.#filmcardView = filmcardView;
     this.#popupView = popupView;
     this.#comments = new CommentsModel(oneFilmData.id);
+    this.#movieModel = new MovieModel();
     this.#comments.init();
     this.#comments.addObserver(this.#handleModelEvent);
+    this.#movieModel.addObserver(this.#handleModelEvent);
     this.#commentsArray = [];
     this.#renderPosition = renderPosition;
   }
 
-  #handleModelEvent = (actionType, comments) => {
+  #handleModelEvent = (actionType, data) => {
     if (actionType === 'comments') {
-      this.#commentsArray = comments;
+      this.#commentsArray = data;
+    } else if (actionType === 'updateFilm') {
+      console.log('updateFilm', data);
+      this.#filmcard.updateFilmcard(data);
+    } else {
+      console.log('new', actionType, data);
     }
   };
 
@@ -47,7 +54,6 @@ export default class PresenterMovie extends AbstractView{
 
     popup.deleteComment();
 
-    const movieModel = new MovieModel();
     popup.popupEmotionClickHandler();
 
     popup.popupAddSaveCommentHandler(()=>{
@@ -95,7 +101,7 @@ export default class PresenterMovie extends AbstractView{
         watchListButton.classList.add('film-details__control-button--active');
         this.#filmData.user_details.watchlist = true;
       }
-      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
+      this.#movieModel.updateFilmById(this.#filmData);
     }); //Popup watchlist click handler
 
     popup.popupFavoriteClickHandler((evt)=>{
@@ -109,7 +115,7 @@ export default class PresenterMovie extends AbstractView{
         favoriteButton.classList.add('film-details__control-button--active');
         this.#filmData.user_details.favorite = true;
       }
-      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
+      this.#movieModel.updateFilmById(this.#filmData);
     }); //Popup favorite click handler
 
     popup.popupWatchedClickHandler((evt)=>{
@@ -118,75 +124,68 @@ export default class PresenterMovie extends AbstractView{
       filmcard.filmCardWatchedButtonHandler();
       if (watchedButton.classList.contains('film-details__control-button--active')) {
         watchedButton.classList.remove('film-details__control-button--active');
-        this.#filmData.user_details.alreadyWatched = false;
+        this.#filmData.user_details.already_watched = false;
       } else {
         watchedButton.classList.add('film-details__control-button--active');
-        this.#filmData.user_details.alreadyWatched = true;
+        this.#filmData.user_details.already_watched = true;
       }
-      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
+      this.#movieModel.updateFilmById(this.#filmData);
     }); //Popup watched click handler
   };
 
   #createFilmcard = (data) => {
-    const filmcard = new this.#filmcardView(data);
-    filmcard.filmCardClickHandler(()=>{
+    this.#filmcard = new this.#filmcardView(data);
+    this.#filmcard.filmCardClickHandler(()=>{
       if (document.querySelector('.film-details')) {
         document.querySelector('.film-details').remove();
       }
       document.body.classList.add('hide-overflow');
-      this.#createPopup(filmcard);
+      this.#createPopup(this.#filmcard);
     });
-    const movieModel = new MovieModel();
 
-    filmcard.filmCardFavoriteClickHandler((evt)=>{
+    this.#filmcard.filmCardFavoriteClickHandler((evt)=>{
       evt.preventDefault();
-      const favoriteButton = filmcard.element.querySelector('.film-card__controls-item--favorite');
-      if (favoriteButton.classList.contains('film-card__controls-item--active')) {
-        favoriteButton.classList.remove('film-card__controls-item--active');
-        this.#filmData.user_details.favorite = false;
-        if (document.querySelector('.main-navigation__item--active').innerHTML.includes('Favorites')) {
-          filmcard.element.remove();
-        }
-      } else {
-        favoriteButton.classList.add('film-card__controls-item--active');
-        this.#filmData.user_details.favorite = true;
-      }
-      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
+      this.#filmCardFavoriteClickHandlerCallback();
     }); //favorite button click Handler
 
-    filmcard.filmCardWatchedClickHandler((evt)=>{
+    this.#filmcard.filmCardWatchedClickHandler((evt)=>{
       evt.preventDefault();
-      const watchedButton = filmcard.element.querySelector('.film-card__controls-item--mark-as-watched');
-      if (watchedButton.classList.contains('film-card__controls-item--active')) {
-        watchedButton.classList.remove('film-card__controls-item--active');
-        this.#filmData.user_details.alreadyWatched = false;
-        if (document.querySelector('.main-navigation__item--active').innerHTML.includes('History')) {
-          filmcard.element.remove();
-        }
-      } else {
-        watchedButton.classList.add('film-card__controls-item--active');
-        this.#filmData.user_details.alreadyWatched = true;
-      }
-      movieModel.updateFilmById(this.#filmData.id, this.#filmData);
+      this.#filmCardWatchedClickHandlerCallback();
     }); //watched button click Handler
 
-    filmcard.filmCardWatchlistClickHandler((evt)=>{
+    this.#filmcard.filmCardWatchlistClickHandler((evt)=>{
       evt.preventDefault();
-      const watchListButton = filmcard.element.querySelector('.film-card__controls-item--add-to-watchlist');
-      if (watchListButton.classList.contains('film-card__controls-item--active')) {
-        watchListButton.classList.remove('film-card__controls-item--active');
-        this.#filmData.user_details.watchlist = false;
-        if (document.querySelector('.main-navigation__item--active').innerHTML.includes('Watchlist')) {
-          filmcard.element.remove();
-        }
-      } else {
-        watchListButton.classList.add('film-card__controls-item--active');
-        this.#filmData.user_details.watchlist = true;
-        movieModel.updateFilmById(this.#filmData.id, this.#filmData);
-      }
+      this.#filmCardWatchlistClickHandlerCallback();
     }); //watchList button click Handler
 
-    this.#renderFunction(filmcard, document.querySelector('.films-list__container'), this.#renderPosition.BEFOREEND);
+    this.#renderFunction(this.#filmcard, document.querySelector('.films-list__container'), this.#renderPosition.BEFOREEND);
+  };
+
+  #filmCardFavoriteClickHandlerCallback = () => {
+    if (this.#filmData.user_details.favorite === true) {
+      this.#filmData.user_details.favorite = false;
+    } else {
+      this.#filmData.user_details.favorite = true;
+    }
+    this.#movieModel.updateFilmById(this.#filmData);
+  };
+
+  #filmCardWatchedClickHandlerCallback = () => {
+    if (this.#filmData.user_details.already_watched === true) {
+      this.#filmData.user_details.already_watched = false;
+    } else {
+      this.#filmData.user_details.already_watched = true;
+    }
+    this.#movieModel.updateFilmById(this.#filmData);
+  };
+
+  #filmCardWatchlistClickHandlerCallback = () => {
+    if (this.#filmData.user_details.watchlist === true) {
+      this.#filmData.user_details.watchlist = false;
+    } else {
+      this.#filmData.user_details.watchlist = true;
+    }
+    this.#movieModel.updateFilmById(this.#filmData);
   };
 
   filmcard = (() => {

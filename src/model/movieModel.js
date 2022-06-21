@@ -8,6 +8,7 @@ export default class MovieModel extends Observable {
   #watchlistNum;
   #historyNum;
   #favoritesNum;
+  #oneFilmFromServer;
   constructor() {
     super();
     this.#filmApi = new MovieApiService();
@@ -39,12 +40,9 @@ export default class MovieModel extends Observable {
     document.querySelector('[href="#all"]').click();
   };
 
-  updateFilmById = (filmId, thisFilm) => {
-    for (let i = 0; i < this.#films.length; i++) {
-      if (this.#films[i].id === filmId) {
-        this.#films[i] = thisFilm;
-      }
-    }
+  updateFilmById = async (thisFilm) => {
+    this.#oneFilmFromServer = await this.#filmApi.updateMovie(thisFilm);
+    this._notify('updateFilm', this.#oneFilmFromServer);
   };
 
   get template () {
