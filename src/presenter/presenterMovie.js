@@ -89,7 +89,7 @@ export default class PresenterMovie extends AbstractView{
     popup.popupWatchlistClickHandler((evt)=>{
       evt.preventDefault();
       const watchListButton = popup.element.querySelector('.film-details__control-button--watchlist');
-      filmcard.filmCardWatchListButtonHandler();
+      this.#filmCardWatchlistClickHandlerCallback();
       if (watchListButton.classList.contains('film-details__control-button--active')) {
         watchListButton.classList.remove('film-details__control-button--active');
         this.#filmData.user_details.watchlist = false;
@@ -103,7 +103,7 @@ export default class PresenterMovie extends AbstractView{
     popup.popupFavoriteClickHandler((evt)=>{
       evt.preventDefault();
       const favoriteButton = popup.element.querySelector('.film-details__control-button--favorite');
-      filmcard.filmCardFavoriteButtonHandler();
+      this.#filmCardFavoriteClickHandlerCallback();
       if (favoriteButton.classList.contains('film-details__control-button--active')) {
         favoriteButton.classList.remove('film-details__control-button--active');
         this.#filmData.user_details.favorite = false;
@@ -117,7 +117,7 @@ export default class PresenterMovie extends AbstractView{
     popup.popupWatchedClickHandler((evt)=>{
       evt.preventDefault();
       const watchedButton = popup.element.querySelector('.film-details__control-button--watched');
-      filmcard.filmCardWatchedButtonHandler();
+      this.#filmCardWatchedClickHandlerCallback();
       if (watchedButton.classList.contains('film-details__control-button--active')) {
         watchedButton.classList.remove('film-details__control-button--active');
         this.#filmData.user_details.already_watched = false;
