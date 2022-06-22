@@ -76,14 +76,14 @@ export default class MovieApiService extends ApiService {
   };
 
   createComment = async (filmId, emoji, text) => {
-    const body = {
+    const requestBody = {
       emotion: emoji,
       comment: text
     };
     const response = await this._load({
       url: `comments/${ filmId }`,
       method: Method.POST,
-      body: JSON.stringify(body),
+      body: JSON.stringify(requestBody),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
     return ApiService.parseResponse(response);

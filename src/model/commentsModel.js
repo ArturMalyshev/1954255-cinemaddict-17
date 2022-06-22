@@ -22,10 +22,9 @@ export default class CommentsModel extends Observable{
     this._notify('comments', this.#commentsArray);
   };
 
-  createComment = async (filmId, text, emotion) => {
+  createComment = (filmId, text, emotion) => {
     const textEncoded = he.encode(text);
-    const data = await this.#commentApi.createComment(filmId, emotion, textEncoded);
-    console.log(data);
+    const data = this.#commentApi.createComment(filmId, emotion, textEncoded);
     this._notify('commentCreate', data);
   };
 

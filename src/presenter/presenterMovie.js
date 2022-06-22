@@ -20,7 +20,7 @@ export default class PresenterMovie extends AbstractView{
     this.#renderFunction = renderFunction;
     this.#filmcardView = filmcardView;
     this.#popupView = popupView;
-    this.#comments = new CommentsModel(oneFilmData.id);
+    this.#comments = new CommentsModel(this.#filmData.id);
     this.#movieModel = new MovieModel();
     this.#comments.init();
     this.#comments.addObserver(this.#handleModelEvent);
@@ -55,7 +55,12 @@ export default class PresenterMovie extends AbstractView{
         this.#popup.normalizeDeleteButton(data.commentID);
       });
     } else if (actionType === 'commentCreate') {
-      console.log(data);
+      data.then(
+        ()=>{console.log('eee')},
+        ()=>{console.log('fff')}
+      );
+    } else {
+      console.log(actionType);
     }
   };
 
@@ -81,7 +86,7 @@ export default class PresenterMovie extends AbstractView{
     this.#popup.popupAddSaveCommentHandler(()=>{
       const pressed = new Set();
       document.addEventListener('keyup', (evt)=>{
-        if (evt.key === 'Meta' || evt.key === 'Enter' || evt.key === 'Ctrl') {
+        if (evt.key === 'Meta' || evt.key === 'Enter' || evt.key === 'Control') {
           pressed.clear();
         }
       });
@@ -89,11 +94,11 @@ export default class PresenterMovie extends AbstractView{
         pressed.add(evt.key);
         const emojiField = document.querySelector('.film-details__add-emoji-label');
         const commentField = document.querySelector('.film-details__comment-input');
-        if ((pressed.has('Meta') && (pressed.has('Enter'))) || (pressed.has('Ctrl') && (pressed.has('Enter')))) {
+        if ((pressed.has('Meta') && (pressed.has('Enter'))) || (pressed.has('Control') && (pressed.has('Enter')))) {
           if (emojiField.innerHTML !== ''){
             if (commentField.value !== '') {
               const emojiName = emojiField.firstChild.getAttribute('alt').slice(6);
-              new CommentsModel().createComment(this.#filmData.id, commentField.value, emojiName);
+              this.#comments.createComment(this.#filmData.id, commentField.value, emojiName);
               this.#popup.updatePopup(filmcard);
             }
           }
@@ -103,8 +108,8 @@ export default class PresenterMovie extends AbstractView{
             pressed.add('Meta');
           } else if (evt.key === 'Enter') {
             pressed.add('Enter');
-          } else if (evt.key === 'Ctrl') {
-            pressed.add('Enter');
+          } else if (evt.key === 'Control') {
+            pressed.add('Control');
           }
           return;
         }

@@ -11,6 +11,7 @@ export default class Observable {
    */
   addObserver(observer) {
     this.#observers.add(observer);
+    console.log( this.#observers);
   }
 
   /**
