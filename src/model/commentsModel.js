@@ -24,7 +24,7 @@ export default class CommentsModel extends Observable{
 
   createComment = (filmId, text, emotion) => {
     const textEncoded = he.encode(text);
-    const data = this.#commentApi.createComment(filmId, emotion, textEncoded);
+    const data = this.#commentApi.ApiCreateComment(filmId, emotion, textEncoded);
     this._notify('commentCreate', data);
   };
 

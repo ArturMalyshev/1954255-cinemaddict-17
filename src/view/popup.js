@@ -331,9 +331,24 @@ export default class Popup extends AbstractStatefulView{
     this.updatePopup(this.#emoji);
   };
 
-  popupAddSaveCommentHandler = (callback) => {
+  saveCommentHandler = (callback) => {
     this.#addCommentHandler = callback;
     callback();
+  };
+
+  creatingComment = () => {
+    const input = document.querySelector('.film-details__comment-input');
+    input.value = 'Creating...';
+    input.setAttribute('disabled', 'disabled');
+    document.querySelectorAll('.film-details__emoji-item').forEach((smile)=>{
+      smile.setAttribute('disabled', 'disabled');
+      smile.removeEventListener('click', this.#EmotionToggleHandler);
+    });
+  };
+
+  successfulCreatedComment = (array) => {
+    this.#commentsArray = array;
+    this.updatePopup(this.#commentsArray);
   };
 
   updatePopup = (data) => {

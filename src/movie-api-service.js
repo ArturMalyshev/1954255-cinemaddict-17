@@ -75,7 +75,7 @@ export default class MovieApiService extends ApiService {
     return ApiService.parseResponse(response);
   };
 
-  createComment = async (filmId, emoji, text) => {
+  ApiCreateComment = async (filmId, emoji, text) => {
     const requestBody = {
       emotion: emoji,
       comment: text

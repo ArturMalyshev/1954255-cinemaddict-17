@@ -55,16 +55,17 @@ export default class PresenterMovie extends AbstractView{
         this.#popup.normalizeDeleteButton(data.commentID);
       });
     } else if (actionType === 'commentCreate') {
+      this.#popup.creatingComment();
       data.then(
-        ()=>{console.log('eee')},
-        ()=>{console.log('fff')}
+        (result)=>{
+          this.#popup.successfulCreatedComment = (result);
+          this.#popup.updatePopup(this.#movieModel.adaptFromServer(result.movie));
+        },
       );
-    } else {
-      console.log(actionType);
     }
   };
 
-  #createPopup = (filmcard) => {
+  #createPopup = () => {
     this.#renderFunction(this.#popup, document.querySelector('.main'), this.#renderPosition.BEFOREEND);
 
     this.#popup.closeButtonClickHandler(() => {
@@ -83,7 +84,7 @@ export default class PresenterMovie extends AbstractView{
 
     this.#popup.popupEmotionClickHandler();
 
-    this.#popup.popupAddSaveCommentHandler(()=>{
+    this.#popup.saveCommentHandler(()=>{
       const pressed = new Set();
       document.addEventListener('keyup', (evt)=>{
         if (evt.key === 'Meta' || evt.key === 'Enter' || evt.key === 'Control') {
@@ -96,10 +97,9 @@ export default class PresenterMovie extends AbstractView{
         const commentField = document.querySelector('.film-details__comment-input');
         if ((pressed.has('Meta') && (pressed.has('Enter'))) || (pressed.has('Control') && (pressed.has('Enter')))) {
           if (emojiField.innerHTML !== ''){
-            if (commentField.value !== '') {
+            if (commentField.value !== '' && commentField.value !== 'Creating...') {
               const emojiName = emojiField.firstChild.getAttribute('alt').slice(6);
               this.#comments.createComment(this.#filmData.id, commentField.value, emojiName);
-              this.#popup.updatePopup(filmcard);
             }
           }
         } else {
