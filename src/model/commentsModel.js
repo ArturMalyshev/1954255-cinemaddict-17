@@ -19,16 +19,22 @@ export default class CommentsModel extends Observable{
     } catch(err) {
       this.#commentApi = [];
     }
-
     this._notify('comments', this.#commentsArray);
   };
 
-  createComment = (text, emotion) => {
+  createComment = async (filmId, text, emotion) => {
     const textEncoded = he.encode(text);
-    // eslint-disable-next-line no-console
-    console.log(textEncoded);
-    // eslint-disable-next-line no-console
-    console.log(emotion);
+    const data = await this.#commentApi.createComment(filmId, emotion, textEncoded);
+    console.log(data);
+    this._notify('commentCreate', data);
+  };
+
+  deleteComment = (commentId) => {
+    const data = {
+      promise: this.#commentApi.deleteComment(commentId),
+      commentID: commentId
+    };
+    this._notify('commentDelete', data);
   };
 
   get template() {

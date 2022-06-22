@@ -42,6 +42,7 @@ export default class Popup extends AbstractStatefulView{
   #popupFavoriteHandler;
   #popupWatchedHandler;
   #addCommentHandler;
+  #deleteCommentHandler;
   constructor(filmInfoObject, commentsArray) {
     super();
     this._restoreHandlers = () => {
@@ -81,11 +82,8 @@ export default class Popup extends AbstractStatefulView{
         smile.addEventListener('click', this.#EmotionToggleHandler);
       });
 
-      this.element.querySelectorAll('.film-details__comment-delete').forEach((button)=>{
-        button.addEventListener('click', this.#deleteCommentHandler);
-      });
-
       this.#addCommentHandler();
+      this.#deleteCommentHandler();
 
       this.element.scrollBy(0, this.element.scrollHeight);
     };
@@ -264,7 +262,7 @@ export default class Popup extends AbstractStatefulView{
                         <p class="film-details__comment-info">
                           <span class="film-details__comment-author">${ comment.author }</span>
                           <span class="film-details__comment-day">${ dayjs(comment.date).fromNow() }</span>
-                          <button class="film-details__comment-delete">Delete</button>
+                          <button class="film-details__comment-delete" id="${ comment.id }">Delete</button>
                         </p>
                       </div>`;
       shell.querySelector('.film-details__comments-list').appendChild(data);
@@ -272,18 +270,31 @@ export default class Popup extends AbstractStatefulView{
     return shell.innerHTML;
   }
 
-  deleteComment = () => {
-    this.element.querySelectorAll('.film-details__comment-delete').forEach((button)=>{
-      button.addEventListener('click', this.#deleteCommentHandler);
-    });
+  deleteCommentHandler = (callback) => {
+    this.#deleteCommentHandler = callback;
+    callback();
   };
 
-  #deleteCommentHandler = (evt) => {
-    evt.preventDefault();
-    evt.path[3].remove();
+  deletingComment = (commentId) => {
+    const selector = `[id="${ commentId }"]`;
+    const button = document.querySelector(selector);
+    button.textContent = 'Deleting...';
+    button.removeEventListener('click', this.#deleteCommentHandler);
+  };
+
+  successfulDeleteComment = (commentId) => {
+    const selector = `[id="${ commentId }"]`;
+    document.querySelector(selector).closest('li').remove();
     let value = document.querySelector('.film-details__comments-count').textContent;
     value -= 1;
     document.querySelector('.film-details__comments-count').textContent = value;
+  };
+
+  normalizeDeleteButton = (commentId) => {
+    const selector = `[id="${ commentId }"]`;
+    const button = document.querySelector(selector);
+    button.textContent = 'Delete';
+    button.addEventListener('click', this.#deleteCommentHandler);
   };
 
   closeButtonClickHandler = (callback) => {

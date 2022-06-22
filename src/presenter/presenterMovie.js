@@ -12,6 +12,7 @@ export default class PresenterMovie extends AbstractView{
   #commentsArray;
   #movieModel;
   #filmcard;
+  #popup;
 
   constructor(oneFilmData, renderFunction, renderPosition, filmcardView, popupView) {
     super();
@@ -31,25 +32,53 @@ export default class PresenterMovie extends AbstractView{
   #handleModelEvent = (actionType, data) => {
     if (actionType === 'comments') {
       this.#commentsArray = data;
+      this.#popup = new this.#popupView(this.#filmData, this.#commentsArray);
     } else if (actionType === 'updateFilm') {
-      this.#filmcard.updateFilmcard(this.#movieModel.adaptFromServer(data));
+      const object = this.#movieModel.adaptFromServer(data);
+      object.commentCount = this.#filmData.commentCount;
+      this.#filmcard.updateFilmcard(object);
+    } else if (actionType === 'commentDelete') {
+      this.#popup.deletingComment(data.commentID);
+      data.promise.then(()=>{
+        this.#popup.successfulDeleteComment(data.commentID);
+        const filmcardData = {
+          userDetails: {
+            alreadyWatched : this.#filmData.userDetails.alreadyWatched,
+            favorite : this.#filmData.userDetails.favorite,
+            watchlist : this.#filmData.userDetails.watchlist,
+          },
+          commentCount : document.querySelector('.film-details__comments-count').textContent
+        };
+        this.#filmcard.updateFilmcard(filmcardData);
+      },
+      ()=>{
+        this.#popup.normalizeDeleteButton(data.commentID);
+      });
+    } else if (actionType === 'commentCreate') {
+      console.log(data);
     }
   };
 
   #createPopup = (filmcard) => {
-    const popup = new this.#popupView(this.#filmData, this.#commentsArray);
-    this.#renderFunction(popup, document.querySelector('.main'), this.#renderPosition.BEFOREEND);
+    this.#renderFunction(this.#popup, document.querySelector('.main'), this.#renderPosition.BEFOREEND);
 
-    popup.closeButtonClickHandler(() => {
+    this.#popup.closeButtonClickHandler(() => {
       document.querySelector('.film-details').remove();
       document.body.classList.remove('hide-overflow');
     });
 
-    popup.deleteComment();
+    this.#popup.deleteCommentHandler(()=>{
+      document.querySelectorAll('.film-details__comment-delete').forEach((button)=>{
+        button.addEventListener('click', (evt)=>{
+          evt.preventDefault();
+          this.#comments.deleteComment(button.getAttribute('id'));
+        });
+      });
+    });
 
-    popup.popupEmotionClickHandler();
+    this.#popup.popupEmotionClickHandler();
 
-    popup.popupAddSaveCommentHandler(()=>{
+    this.#popup.popupAddSaveCommentHandler(()=>{
       const pressed = new Set();
       document.addEventListener('keyup', (evt)=>{
         if (evt.key === 'Meta' || evt.key === 'Enter' || evt.key === 'Ctrl') {
@@ -64,8 +93,8 @@ export default class PresenterMovie extends AbstractView{
           if (emojiField.innerHTML !== ''){
             if (commentField.value !== '') {
               const emojiName = emojiField.firstChild.getAttribute('alt').slice(6);
-              new CommentsModel().createComment(commentField.value, emojiName);
-              popup.updatePopup(filmcard);
+              new CommentsModel().createComment(this.#filmData.id, commentField.value, emojiName);
+              this.#popup.updatePopup(filmcard);
             }
           }
         } else {
@@ -83,9 +112,9 @@ export default class PresenterMovie extends AbstractView{
       });
     });
 
-    popup.popupWatchlistClickHandler((evt)=>{
+    this.#popup.popupWatchlistClickHandler((evt)=>{
       evt.preventDefault();
-      const watchListButton = popup.element.querySelector('.film-details__control-button--watchlist');
+      const watchListButton = this.#popup.element.querySelector('.film-details__control-button--watchlist');
       this.#filmCardWatchlistClickHandlerCallback();
       if (watchListButton.classList.contains('film-details__control-button--active')) {
         watchListButton.classList.remove('film-details__control-button--active');
@@ -97,9 +126,9 @@ export default class PresenterMovie extends AbstractView{
       this.#movieModel.updateFilmById(this.#filmData);
     }); //Popup watchlist click handler
 
-    popup.popupFavoriteClickHandler((evt)=>{
+    this.#popup.popupFavoriteClickHandler((evt)=>{
       evt.preventDefault();
-      const favoriteButton = popup.element.querySelector('.film-details__control-button--favorite');
+      const favoriteButton = this.#popup.element.querySelector('.film-details__control-button--favorite');
       this.#filmCardFavoriteClickHandlerCallback();
       if (favoriteButton.classList.contains('film-details__control-button--active')) {
         favoriteButton.classList.remove('film-details__control-button--active');
@@ -111,9 +140,9 @@ export default class PresenterMovie extends AbstractView{
       this.#movieModel.updateFilmById(this.#filmData);
     }); //Popup favorite click handler
 
-    popup.popupWatchedClickHandler((evt)=>{
+    this.#popup.popupWatchedClickHandler((evt)=>{
       evt.preventDefault();
-      const watchedButton = popup.element.querySelector('.film-details__control-button--watched');
+      const watchedButton = this.#popup.element.querySelector('.film-details__control-button--watched');
       this.#filmCardWatchedClickHandlerCallback();
       if (watchedButton.classList.contains('film-details__control-button--active')) {
         watchedButton.classList.remove('film-details__control-button--active');

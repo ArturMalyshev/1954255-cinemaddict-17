@@ -3,6 +3,8 @@ import ApiService from './framework/api-service.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
 };
 
 export default class MovieApiService extends ApiService {
@@ -71,5 +73,27 @@ export default class MovieApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
     return ApiService.parseResponse(response);
+  };
+
+  createComment = async (filmId, emoji, text) => {
+    const body = {
+      emotion: emoji,
+      comment: text
+    };
+    const response = await this._load({
+      url: `comments/${ filmId }`,
+      method: Method.POST,
+      body: JSON.stringify(body),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+    return ApiService.parseResponse(response);
+  };
+
+  deleteComment = async (commentId) => {
+    await this._load({
+      url: `comments/${ commentId }`,
+      method: Method.DELETE,
+    });
+    return ApiService.response;
   };
 }

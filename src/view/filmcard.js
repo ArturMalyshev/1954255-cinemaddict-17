@@ -40,11 +40,11 @@ export default class Filmcard extends AbstractStatefulView{
     this.#duration = getTimeFromMins(filmInfoObject.filmInfo.runtime);
     this.#genre = filmInfoObject.filmInfo.genre;
     this.#description = filmInfoObject.filmInfo.description;
-    this.#commentCount = filmInfoObject.comments.length;
     this.#state = {
       watched: false,
       favorite:  false,
-      watchlist: false
+      watchlist: false,
+      commentCount: filmInfoObject.comments.length
     };
     this.#state.watched = filmInfoObject.userDetails.alreadyWatched;
     this.#state.favorite = filmInfoObject.userDetails.favorite;
@@ -104,7 +104,7 @@ export default class Filmcard extends AbstractStatefulView{
           </p>
           <img src="${  this.#img  }" alt="${  this.#name  }" class="film-card__poster">
             <p class="film-card__description">${  this.#description  }</p>
-            <span class="film-card__comments">${  this.#commentCount  } comments</span>
+            <span class="film-card__comments">${  this.#state.commentCount  } comments</span>
         </a>
         <div class="film-card__controls">
           <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${ this.#watchlistClass }" type="button">Add to
@@ -125,6 +125,7 @@ export default class Filmcard extends AbstractStatefulView{
       watched: filmData.userDetails.alreadyWatched,
       favorite:  filmData.userDetails.favorite,
       watchlist: filmData.userDetails.watchlist,
+      commentCount: filmData.commentCount || this.#state.commentCount
     };
     this.updateElement(this.#state);
   };
